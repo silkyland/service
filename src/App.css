@@ -1,0 +1,14 @@
+@import '~antd/dist/antd.css';
+body {
+  font-family: 'Prompt', sans-serif;
+}
+
+#master-component-header .logo {
+  height: 31px;
+  color: #fff;
+  float: left;
+  font-size: 18px;
+  font-weight: bold;
+  align-content: center;
+  align-items: center;
+}
