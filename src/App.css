@@ -1,6 +1,8 @@
-@import '~antd/dist/antd.css';
+/* @import url('https://fonts.googleapis.com/css?family=Prompt'); */
+
 body {
   font-family: 'Prompt', sans-serif;
+  background-color: #fff;
 }
 
 #master-component-header .logo {
@@ -12,3 +14,26 @@ body {
   align-content: center;
   align-items: center;
 }
+
+.bg-primary,
+.bg-success,
+.bg-danger,
+.bg-warning {
+  color: #fff;
+}
+
+/* .bg-primary {
+  background-color: #4190F7;
+}
+
+.bg-success {
+  background-color: #70C040;
+}
+
+.bg-warning {
+  background-color: #EFAF41;
+}
+
+.bg-danger {
+  background-color: #E23C39;
+} */

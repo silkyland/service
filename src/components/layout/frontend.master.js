@@ -1,7 +1,32 @@
 import React, { Component } from "react";
-import { Layout, Menu, Breadcrumb, Icon } from "antd";
-import { Link, BrowserRouter as Router } from "react-router-dom";
-const { Header, Content, Footer, Sider } = Layout;
+import {
+  Container,
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
+} from "reactstrap";
+import {
+  AppAside,
+  AppBreadcrumb,
+  AppFooter,
+  AppHeader,
+  AppSidebar,
+  AppSidebarFooter,
+  AppSidebarForm,
+  AppSidebarHeader,
+  AppSidebarMinimizer,
+  AppSidebarNav
+} from "@coreui/react";
+import HeaderLayout from "./HeaderLayout";
+import FooterLayout from "./FooterLayout";
 
 class FrontendMaster extends Component {
   constructor(props) {
@@ -10,53 +35,21 @@ class FrontendMaster extends Component {
   }
   render() {
     return (
-      <Router>
-        <Layout>
-          <Header id="master-component-header">
-            <div className="logo">
-              <Link to="/viangbua">
-                <img
-                  src="https://www.cmru.ac.th/assets/images/cmru-logo-min.png"
-                  alt=""
-                  style={{ width: 32 }}
-                />{" "}
-                ระบบฐานข้อมูลซ่อมบำรุง
-              </Link>
-            </div>
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={["1"]}
-              style={{ lineHeight: "64px", float: "right" }}
-            >
-              <Menu.Item key="1">
-                <Link to="/" title="sawadee">
-                  <Icon type="home" />
-                  หน้าแรก
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/" title="sawadee">
-                  <Icon type="pie-chart" />
-                  สถิติการใช้งาน
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Link to="/" title="dashboard">
-                  <Icon type="form" />
-                  ประเมิน
-                </Link>
-              </Menu.Item>
-            </Menu>
-          </Header>
-          <Content style={{ padding: "0 50px", background: "#fff" }}>
-            {this.props.children}
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            &copy; ระบบฐานข้อมูลซ่อมบำรุง พัฒนาโดย นายบัณฑิต นันทะเทศ
-          </Footer>
-        </Layout>
-      </Router>
+      <div className="app">
+        <Navbar color="dark" expand="md">
+          <Container fluid>
+            <HeaderLayout />
+          </Container>
+        </Navbar>
+        <div className="app-body">
+          <main className="main">
+            <Container fluid>{this.props.children}</Container>
+          </main>
+        </div>
+        <AppFooter>
+          <FooterLayout />
+        </AppFooter>
+      </div>
     );
   }
 }
