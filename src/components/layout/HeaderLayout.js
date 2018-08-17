@@ -59,12 +59,12 @@ class HeaderLayout extends Component {
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav pills className="ml-auto">
             <NavItem>
-              <NavLink href="#" active>
+              <NavLink href="#">
                 <i className="fa fa-home" /> หน้าแรก
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#">
+              <NavLink href="#" active>
                 <i className="fa fa-pie-chart" /> สถิติการใช้งาน
               </NavLink>
             </NavItem>
