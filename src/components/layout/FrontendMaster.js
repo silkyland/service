@@ -1,32 +1,8 @@
+import { AppFooter } from "@coreui/react";
 import React, { Component } from "react";
-import {
-  Container,
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
-import {
-  AppAside,
-  AppBreadcrumb,
-  AppFooter,
-  AppHeader,
-  AppSidebar,
-  AppSidebarFooter,
-  AppSidebarForm,
-  AppSidebarHeader,
-  AppSidebarMinimizer,
-  AppSidebarNav
-} from "@coreui/react";
-import HeaderLayout from "./HeaderLayout";
+import { Container, Navbar } from "reactstrap";
 import FooterLayout from "./FooterLayout";
+import HeaderLayout from "./HeaderLayout";
 
 class FrontendMaster extends Component {
   constructor(props) {

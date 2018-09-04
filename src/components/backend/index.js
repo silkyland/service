@@ -52,7 +52,7 @@ class Backend extends Component {
                     />
                   ) : null;
                 })}
-                <Redirect from="/" to="/dashboard" />
+                <Redirect from="/" to="/admin/dashboard" />
               </Switch>
             </Container>
           </main>
