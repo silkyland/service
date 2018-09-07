@@ -1,7 +1,16 @@
 import React from "react";
-import { Form, FormGroup, Label, Input, CardBody, Button } from "reactstrap";
+import {
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  CardBody,
+  Button,
+  Alert
+} from "reactstrap";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import { Dots } from "react-activity";
 
 const ADD_USER = gql`
   mutation AddUser(
@@ -31,9 +40,28 @@ const ADD_USER = gql`
 const UserForm = props => {
   return (
     <Mutation mutation={ADD_USER}>
-      {(addUser, { data }) => {
+      {(addUser, { data, loading, error }) => {
+        if (loading)
+          return (
+            <CardBody>
+              <Dots />
+            </CardBody>
+          );
         return (
           <CardBody>
+            {error ? (
+              <Alert color="danger">
+                <h4>เกิดข้อผิดพลาด !</h4>
+                <ul>
+                  {error.graphQLErrors.map(({ message }) =>
+                    message.split(",").map((m, i) => <li key={i}>{m}</li>)
+                  )}
+                </ul>
+              </Alert>
+            ) : (
+              ""
+            )}
+
             <Form
               onSubmit={e => {
                 e.preventDefault();

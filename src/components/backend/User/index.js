@@ -49,9 +49,7 @@ class User extends Component {
               )}
             </div>
           </CardHeader>
-          <CardBody>
-            <AlertLayout />
-          </CardBody>
+          <CardBody />
           {this.state.isOpen ? (
             <UserForm
               {...this.state}

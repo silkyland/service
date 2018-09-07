@@ -12,24 +12,26 @@ const ALERT_QUERY = gql`
 `;
 
 const AlertLayout = props => (
-  <Query query={ALERT_QUERY} errorPolicy="all">
+  <Query errorPolicy="all">
     {({ error, data, loading }) => {
       if (loading) return <span>loading...</span>;
-      return (
-        <Alert color={props.color}>
-          <pre>
-            {error.graphQLErrors.map(({ message }, i) => (
-              <span key={i}>{message}</span>
-            ))}
-          </pre>
-        </Alert>
-      );
+      if (error)
+        return (
+          <Alert color={props.color}>
+            <h4>เกิดข้อผิดพลาด !</h4>
+            <ul>
+              {error.graphQLErrors.map(({ message }, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ul>
+          </Alert>
+        );
     }}
   </Query>
 );
 
 AlertLayout.defaultProps = {
-  color: "success",
+  color: "danger",
   title: "สำเร็จ",
   message: "ข้อมูลของคุณได้ถูกบันทึกเรียบร้อยแล้ว !"
 };
