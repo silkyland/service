@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Card, CardHeader, Button } from "reactstrap";
+import { Card, CardHeader, Button, CardBody } from "reactstrap";
 import UserList from "./UserList";
-import FormInput from "./FormInput";
+import UserForm from "./UserForm";
+import AlertLayout from "../../layout/AlertLayout";
 
 class User extends Component {
   constructor(props) {
@@ -48,8 +49,11 @@ class User extends Component {
               )}
             </div>
           </CardHeader>
+          <CardBody>
+            <AlertLayout />
+          </CardBody>
           {this.state.isOpen ? (
-            <FormInput
+            <UserForm
               {...this.state}
               onInputChangeHandler={this.onInputChangeHandler}
               autoFocus={true}

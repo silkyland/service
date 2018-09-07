@@ -16,11 +16,9 @@ import "./App.css";
 import "react-activity/dist/react-activity.css";
 
 ReactDOM.render(
-  <Provider store={Store}>
-    <ApolloProvider client={client}>
-      <App {...this.props} />
-    </ApolloProvider>
-  </Provider>,
+  <ApolloProvider client={client}>
+    <App {...this.props} />
+  </ApolloProvider>,
   document.getElementById("root")
 );
 registerServiceWorker();
