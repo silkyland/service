@@ -4,20 +4,8 @@ import gql from "graphql-tag";
 import { Query } from "react-apollo";
 import { Dots } from "react-activity";
 import moment from "moment";
+import { GET_USERS } from "../../../query/user";
 moment.locale("en");
-
-const GET_USERS = gql`
-  {
-    users {
-      id
-      name
-      username
-      email
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
 const UserList = props => (
   <Query query={GET_USERS}>

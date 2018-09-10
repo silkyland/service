@@ -55,6 +55,7 @@ class User extends Component {
               {...this.state}
               onInputChangeHandler={this.onInputChangeHandler}
               autoFocus={true}
+              toggleForm={this.toggleForm}
             />
           ) : null}
 

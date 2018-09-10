@@ -21,7 +21,15 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+  dataIdFromObject: result => {
+    console.log("result in apolloClient.js = ", result);
+    if (result.__typename != null && result.id != null) {
+      return `${result.__typename}-${result.id}`;
+    }
+    return null;
+  }
+});
 const client = new ApolloClient({
   link: from([errorLink, link]),
   cache

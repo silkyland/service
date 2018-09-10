@@ -11,42 +11,30 @@ import {
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import { Dots } from "react-activity";
+import { CREATE_USER, GET_USERS } from "../../../query/user";
+import update from "immutability-helper";
 
-const ADD_USER = gql`
-  mutation AddUser(
-    $name: String
-    $username: String
-    $email: String
-    $password: String
-    $confirmPassword: String
-  ) {
-    addUser(
-      name: $name
-      username: $username
-      email: $email
-      password: $password
-      confirmPassword: $confirmPassword
-    ) {
-      id
-      name
-      username
-      email
-      createdAt
-      updatedAt
+const updateCache = (cache, { data: { addUser } }) => {
+  let { users } = cache.readQuery({ query: GET_USERS });
+  cache.writeQuery({
+    query: GET_USERS,
+    data: {
+      users: update(users, { $push: [addUser] })
     }
-  }
-`;
+  });
+};
 
 const UserForm = props => {
   return (
-    <Mutation mutation={ADD_USER}>
-      {(addUser, { data, loading, error }) => {
+    <Mutation mutation={CREATE_USER} update={updateCache}>
+      {(createUser, { data, loading, error }) => {
         if (loading)
           return (
             <CardBody>
               <Dots />
             </CardBody>
           );
+        if (data) props.toggleForm();
         return (
           <CardBody>
             {error ? (
@@ -65,7 +53,7 @@ const UserForm = props => {
             <Form
               onSubmit={e => {
                 e.preventDefault();
-                addUser({
+                createUser({
                   variables: {
                     name: props.input.name,
                     username: props.input.username,
