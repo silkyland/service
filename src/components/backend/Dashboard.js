@@ -1,2 +1,4 @@
 import React, { Component } from "react";
-export default () => <p>ssss</p>;
+const DashBoard = () => (<p>ssss</p>)
+
+export default DashBoard

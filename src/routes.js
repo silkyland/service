@@ -1,8 +1,8 @@
 import React from "react";
 
 import Backend from "./components/backend";
-import DashBoard from "./components/backend/DashBoard";
 import User from "./components/backend/User";
+import DashBoard from "./components/backend/Dashboard";
 
 function Loading() {
   return <div>Loading...</div>;
