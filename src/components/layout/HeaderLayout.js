@@ -1,28 +1,13 @@
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
   Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
   Nav,
+  NavbarBrand,
+  NavbarToggler,
   NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavLink
 } from "reactstrap";
-import PropTypes from "prop-types";
-
-import {
-  AppAsideToggler,
-  AppHeaderDropdown,
-  AppNavbarBrand,
-  AppSidebarToggler
-} from "@coreui/react";
-import logo from "../../assets/img/brand/logo.svg";
-import sygnet from "../../assets/img/brand/sygnet.svg";
 
 const propTypes = {
   children: PropTypes.node

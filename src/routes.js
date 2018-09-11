@@ -9,7 +9,7 @@ function Loading() {
 }
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
-  { path: "/", exact: true, name: "Home", component: Backend },
+  { path: "/admin", exact: true, name: "Home", component: Backend },
   { path: "/admin/dashboard", name: "Dashboard", component: DashBoard },
   { path: "/admin/users", name: "Users", component: User }
 ];

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import {
   Button,
   Card,
+  CardBody,
   CardText,
   CardTitle,
   Col,
@@ -11,14 +12,9 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Row,
   TabContent,
-  Table,
-  TabPane,
-  CardBody
+  TabPane
 } from "reactstrap";
 import FrontendMaster from "../layout/FrontendMaster";
 class Statistic extends Component {

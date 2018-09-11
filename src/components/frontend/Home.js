@@ -108,7 +108,7 @@ class Home extends Component {
                         <td>นักศึกษา</td>
                         <td>iPhone 8 Red 256 GB ครบกล่อง</td>
                         <td>
-                          <div class="btn btn-warning btn-block">
+                          <div className="btn btn-warning btn-block">
                             ระหว่างดำเนินการ
                           </div>
                         </td>
@@ -123,7 +123,9 @@ class Home extends Component {
                         </td>
 
                         <td>
-                          <div class="btn btn-success btn-block">เสร็จแล้ว</div>
+                          <div className="btn btn-success btn-block">
+                            เสร็จแล้ว
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -133,7 +135,9 @@ class Home extends Component {
                         <td>บุคลกากร</td>
                         <td>Macbook Pro 2014 Ram 8 GB SSD 256GB + กระเป๋า</td>
                         <td>
-                          <div class="btn btn-success btn-block">เสร็จแล้ว</div>
+                          <div className="btn btn-success btn-block">
+                            เสร็จแล้ว
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -146,7 +150,9 @@ class Home extends Component {
                           Keyboard
                         </td>
                         <td>
-                          <div class="btn btn-success btn-block">เสร็จแล้ว</div>
+                          <div className="btn btn-success btn-block">
+                            เสร็จแล้ว
+                          </div>
                         </td>
                       </tr>
                     </tbody>
