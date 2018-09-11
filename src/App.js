@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Home } from "./components";
 import "moment/locale/fr";
 import Login from "./components/backend/Login";
@@ -11,13 +11,13 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <React.Fragment>
+        <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/stat" component={Statistic} />
           <Route path="/login" component={Login} />
           <Route path="/admin" component={Backend} />
           <Route component={Page404} />
-        </React.Fragment>
+        </Switch>
       </Router>
     );
   }

@@ -8,6 +8,7 @@
     "@coreui/react": "^2.0.5",
     "apollo-boost": "^0.1.15",
     "apollo-cache-inmemory": "^1.2.9",
+    "apollo-link-state": "^0.4.1",
     "axios": "^0.18.0",
     "flag-icon-css": "^3.0.0",
     "font-awesome": "^4.7.0",

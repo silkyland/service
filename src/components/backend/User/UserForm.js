@@ -9,18 +9,17 @@ import {
   Alert
 } from "reactstrap";
 import { Mutation, Query } from "react-apollo";
-import gql from "graphql-tag";
 import { Dots } from "react-activity";
 import { CREATE_USER, GET_USERS } from "../../../query/user";
 import update from "immutability-helper";
 import { ALL_USER_TYPES } from "../../../query/userType";
 
-const updateCache = (cache, { data: { addUser } }) => {
+const updateCache = (cache, { data: { createUser } }) => {
   let { users } = cache.readQuery({ query: GET_USERS });
   cache.writeQuery({
     query: GET_USERS,
     data: {
-      users: update(users, { $push: [addUser] })
+      users: update(users, { $push: [createUser] })
     }
   });
 };
@@ -57,6 +56,7 @@ const UserForm = props => {
                 createUser({
                   variables: {
                     name: props.input.name,
+                    userTypeId: props.input.userTypeId,
                     username: props.input.username,
                     email: props.input.email,
                     password: props.input.password,
@@ -72,7 +72,12 @@ const UserForm = props => {
                     if (loading) return <Dots />;
                     if (error) return `Error! ${error.message}`;
                     return (
-                      <Input type="select">
+                      <Input
+                        type="select"
+                        onChange={props.onInputChangeHandler}
+                        name="userTypeId"
+                        defaultValue={props.userTypeId}
+                      >
                         {data.userTypes.map((ut, index) => (
                           <option key={index} value={ut.id}>
                             {ut.name}

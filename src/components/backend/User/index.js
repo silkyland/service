@@ -3,14 +3,18 @@ import { Card, CardHeader, Button, CardBody } from "reactstrap";
 import UserList from "./UserList";
 import UserForm from "./UserForm";
 import AlertLayout from "../../layout/AlertLayout";
+import { ApolloConsumer } from "react-apollo";
 
 class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
+      isUpdate: false,
       input: {
+        id: "",
         username: "",
+        userTypeId: 1,
         name: "",
         email: "",
         password: "",
@@ -19,6 +23,16 @@ class User extends Component {
     };
     this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
+    this.onEditButtonClicked = this.onEditButtonClicked.bind(this);
+  }
+
+  onEditButtonClicked(id) {
+    <ApolloConsumer>
+      {client => {
+        console.log(client);
+      }}
+    </ApolloConsumer>;
+    return false;
   }
 
   toggleForm() {
@@ -58,7 +72,7 @@ class User extends Component {
             />
           ) : null}
 
-          <UserList />
+          <UserList onEditButtonClicked={this.onEditButtonClicked} />
         </Card>
       </React.Fragment>
     );

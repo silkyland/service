@@ -1,11 +1,10 @@
 import React from "react";
 import { Card, CardBody, CardHeader, Table, Button } from "reactstrap";
 import gql from "graphql-tag";
-import { Query } from "react-apollo";
+import { Query, withApollo, ApolloConsumer } from "react-apollo";
 import { Dots } from "react-activity";
 import moment from "moment";
 import { GET_USERS } from "../../../query/user";
-moment.locale("en");
 
 const UserList = props => (
   <Query query={GET_USERS}>
@@ -26,15 +25,6 @@ const UserList = props => (
             </tr>
           </thead>
           <tbody>
-            {data.users.length < 1 ? (
-              <tr>
-                <td colSpan={7} className="text-center">
-                  :( ไม่พบผู้ใช้งาน
-                </td>
-              </tr>
-            ) : (
-              ""
-            )}
             {data.users.map((u, index) => (
               <tr key={u.name}>
                 <td>{index + 1}</td>
@@ -42,11 +32,24 @@ const UserList = props => (
                 <td>{u.name}</td>
                 <td>{u.username}</td>
                 <td>{u.email}</td>
-                <td>{moment(u.updatedAt).format("lll")}</td>
+                <td>{moment(u.updatedAt).format("ll")}</td>
                 <td>
-                  <Button color="warning" size="sm">
-                    <i className="fa fa-edit" /> แก้ไข
-                  </Button>{" "}
+                  <ApolloConsumer>
+                    {client => {
+                      console.log(client);
+                      return (
+                        <Button
+                          color="warning"
+                          size="sm"
+                          onClick={async () =>
+                            await props.onEditButtonClicked(1)
+                          }
+                        >
+                          <i className="fa fa-edit" /> แก้ไข
+                        </Button>
+                      );
+                    }}
+                  </ApolloConsumer>
                   <Button color="danger" size="sm">
                     <i className="fa fa-times" /> ลบ
                   </Button>
@@ -60,4 +63,4 @@ const UserList = props => (
   </Query>
 );
 
-export default UserList;
+export default withApollo(UserList);

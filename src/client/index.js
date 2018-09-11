@@ -4,6 +4,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 
 import { HttpLink } from "apollo-link-http";
 import { ApolloLink, from } from "apollo-link";
+import { withClientState } from "apollo-link-state";
 import { onError } from "apollo-link-error";
 
 const link = new HttpLink({
@@ -21,17 +22,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const cache = new InMemoryCache({
-  // dataIdFromObject: result => {
-  //   console.log("result in apolloClient.js = ", result);
-  //   if (result.__typename != null && result.id != null) {
-  //     return `${result.__typename}-${result.id}`;
-  //   }
-  //   return null;
-  // }
+const cache = new InMemoryCache();
+
+const linkState = new withClientState({
+  cache
+  // resolvers,
+  // typeDefs,
+  // defaults
 });
 const client = new ApolloClient({
-  link: from([errorLink, link]),
+  link: from([linkState, errorLink, link]),
   cache
 });
 
