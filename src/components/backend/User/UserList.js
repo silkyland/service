@@ -17,6 +17,7 @@ const UserList = props => (
           <thead>
             <tr>
               <th>#</th>
+              <th>ประเภทผู้ใช้งาน</th>
               <th>ชื่อ - สกุล</th>
               <th>ชื่อผู้ใช้</th>
               <th>อีเมล์</th>
@@ -25,9 +26,19 @@ const UserList = props => (
             </tr>
           </thead>
           <tbody>
+            {data.users.length < 1 ? (
+              <tr>
+                <td colSpan={7} className="text-center">
+                  :( ไม่พบผู้ใช้งาน
+                </td>
+              </tr>
+            ) : (
+              ""
+            )}
             {data.users.map((u, index) => (
               <tr key={u.name}>
                 <td>{index + 1}</td>
+                <td>{u.userType.name}</td>
                 <td>{u.name}</td>
                 <td>{u.username}</td>
                 <td>{u.email}</td>

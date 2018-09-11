@@ -8,11 +8,12 @@ import {
   Button,
   Alert
 } from "reactstrap";
-import { Mutation } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 import gql from "graphql-tag";
 import { Dots } from "react-activity";
 import { CREATE_USER, GET_USERS } from "../../../query/user";
 import update from "immutability-helper";
+import { ALL_USER_TYPES } from "../../../query/userType";
 
 const updateCache = (cache, { data: { addUser } }) => {
   let { users } = cache.readQuery({ query: GET_USERS });
@@ -64,6 +65,24 @@ const UserForm = props => {
                 });
               }}
             >
+              <FormGroup>
+                <Label>ประเภทผู้ใช้งาน :</Label>
+                <Query query={ALL_USER_TYPES}>
+                  {({ loading, error, data }) => {
+                    if (loading) return <Dots />;
+                    if (error) return `Error! ${error.message}`;
+                    return (
+                      <Input type="select">
+                        {data.userTypes.map((ut, index) => (
+                          <option key={index} value={ut.id}>
+                            {ut.name}
+                          </option>
+                        ))}
+                      </Input>
+                    );
+                  }}
+                </Query>
+              </FormGroup>
               <FormGroup>
                 <Label>ชื่อผู้ใช้ :</Label>
                 <Input
