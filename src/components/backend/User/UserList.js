@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import { Query, withApollo, ApolloConsumer } from "react-apollo";
 import { Dots } from "react-activity";
 import moment from "moment";
-import { GET_USERS } from "../../../query/user";
+import { GET_USERS, GET_USER } from "../../../query/user";
 
 const UserList = props => (
   <Query query={GET_USERS}>
@@ -36,13 +36,25 @@ const UserList = props => (
                 <td>
                   <ApolloConsumer>
                     {client => {
-                      console.log(client);
                       return (
                         <Button
                           color="warning"
                           size="sm"
-                          onClick={async () =>
-                            await props.onEditButtonClicked(1)
+                          onClick={async () => {
+                            const { data } = await client.query({
+                              query: GET_USER,
+                              variables: { id: u.id }
+                            })
+                            props.onEditButtonClicked({
+                              id: data.user.id,
+                              userTypeId: data.user.userType.id,
+                              name: data.user.name,
+                              username: data.user.username,
+                              email: data.user.email,
+                              createdAt: data.user.createdAt,
+                              updatedAt: data.user.updatedAt
+                            })
+                          }
                           }
                         >
                           <i className="fa fa-edit" /> แก้ไข
@@ -50,6 +62,7 @@ const UserList = props => (
                       );
                     }}
                   </ApolloConsumer>
+                  {" "}
                   <Button color="danger" size="sm">
                     <i className="fa fa-times" /> ลบ
                   </Button>

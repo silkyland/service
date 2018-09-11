@@ -24,19 +24,30 @@ class User extends Component {
     this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
     this.toggleForm = this.toggleForm.bind(this);
     this.onEditButtonClicked = this.onEditButtonClicked.bind(this);
+    this.clearInput = this.clearInput.bind(this);
   }
 
-  onEditButtonClicked(id) {
-    <ApolloConsumer>
-      {client => {
-        console.log(client);
-      }}
-    </ApolloConsumer>;
-    return false;
+  clearInput() {
+    this.setState({
+      input: {
+        id: "",
+        username: "",
+        userTypeId: 1,
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
+      }
+    });
+  }
+
+  onEditButtonClicked(user) {
+    this.setState({ input: user, isUpdate: true, isOpen: true });
   }
 
   toggleForm() {
     this.setState({ isOpen: !this.state.isOpen });
+    this.clearInput();
   }
 
   onInputChangeHandler(e) {
@@ -69,6 +80,7 @@ class User extends Component {
               onInputChangeHandler={this.onInputChangeHandler}
               autoFocus={true}
               toggleForm={this.toggleForm}
+              clearInput={this.clearInput}
             />
           ) : null}
 

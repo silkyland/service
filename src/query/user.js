@@ -36,7 +36,7 @@ export const GET_USER = gql`
 
 export const UPDATE_USER = gql`
   mutation updateUser(
-    $id: ID
+    $id: ID!
     $userTypeId: Int
     $name: String
     $username: String
@@ -50,13 +50,13 @@ export const UPDATE_USER = gql`
       email: $email
     ) {
       id
+      name
       userType {
         id
         name
       }
-      name
-      username
       email
+      username
       createdAt
       updatedAt
     }
