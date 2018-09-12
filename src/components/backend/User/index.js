@@ -46,7 +46,7 @@ class User extends Component {
   }
 
   toggleForm() {
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState({ isOpen: !this.state.isOpen, isUpdate: false });
     this.clearInput();
   }
 

@@ -95,6 +95,7 @@ const UserForm = props => {
                             variables: {
                               id: props.input.id,
                               userTypeId: props.input.userTypeId,
+                              name: props.input.name,
                               username: props.input.username,
                               email: props.input.email
                             }
@@ -112,7 +113,7 @@ const UserForm = props => {
                               type="select"
                               onChange={props.onInputChangeHandler}
                               name="userTypeId"
-                              defaultValue={props.userTypeId}
+                              defaultValue={props.input.userTypeId}
                             >
                               {data.userTypes.map((ut, index) => (
                                 <option key={index} value={ut.id}>
