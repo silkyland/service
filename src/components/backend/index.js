@@ -21,6 +21,7 @@ import routes from "../../routes";
 import DefaultAside from "./DefaultAside";
 import DefaultFooter from "./DefaultFooter";
 import DefaultHeader from "./DefaultHeader";
+import AlertLayout from "../layout/AlertLayout";
 
 class Backend extends Component {
   render() {
@@ -40,6 +41,7 @@ class Backend extends Component {
           <main className="main">
             <AppBreadcrumb appRoutes={routes} />
             <Container fluid>
+              <AlertLayout />
               <Switch>
                 {routes.map((route, idx) => {
                   return route.component ? (

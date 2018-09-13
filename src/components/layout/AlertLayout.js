@@ -1,37 +1,41 @@
 import React from "react";
 import { Alert } from "reactstrap";
 import PropTypes from "prop-types";
-import gql from "graphql-tag";
-import { Query } from "react-apollo";
-
-const ALERT_QUERY = gql`
-  query AlertQuery {
-    badField
-    goodField
-  }
-`;
+import { ApolloConsumer, Query } from "react-apollo";
+import { GET_ALERT } from "../../query/alert";
+import update from "immutability-helper";
 
 const AlertLayout = props => (
-  <Query errorPolicy="all">
-    {({ error, data, loading }) => {
-      if (loading) return <span>loading...</span>;
-      if (error)
-        return (
-          <Alert color={props.color}>
-            <h4>เกิดข้อผิดพลาด !</h4>
-            <ul>
-              {error.graphQLErrors.map(({ message }, i) => (
-                <li key={i}>{message}</li>
-              ))}
-            </ul>
-          </Alert>
-        );
+  <Query query={GET_ALERT}>
+    {({ data, client }) => {
+      setTimeout(() => {
+        client.writeData({
+          query: GET_ALERT,
+          data: update(data, {
+            alert: {
+              $set: {
+                status: false,
+                color: "success",
+                message: "",
+                title: "",
+                __typename: "Alert"
+              }
+            }
+          })
+        });
+      }, 5000);
+      return data.alert.status ? (
+        <Alert color={data.alert.color}>
+          <h4>{data.alert.title}</h4>
+          <p>{data.alert.message}</p>
+        </Alert>
+      ) : null;
     }}
   </Query>
 );
 
 AlertLayout.defaultProps = {
-  color: "danger",
+  color: "success",
   title: "สำเร็จ",
   message: "ข้อมูลของคุณได้ถูกบันทึกเรียบร้อยแล้ว !"
 };

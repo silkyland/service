@@ -1,14 +1,27 @@
 const typeDefs = `
-    type App {
-        name: String
+    type Alert {
+        color: String
+        status : Boolean
+        message: String
+        title: String
     }
-
+    
     type Query {
-        app: App
+        alert : Alert
     }
 
     type Mutation {
-        changeAppName: App
+        setAlert( 
+            color: String
+            status : Boolean
+            message: String
+            title: String
+        ){
+            color
+            status
+            message
+            title
+        }
     }
 `;
 export default typeDefs;

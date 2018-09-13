@@ -8,7 +8,7 @@ import {
   Button,
   Alert
 } from "reactstrap";
-import { Mutation, Query } from "react-apollo";
+import { Mutation, Query, ApolloConsumer } from "react-apollo";
 import { Dots } from "react-activity";
 import {
   CREATE_USER,
@@ -18,9 +18,11 @@ import {
 } from "../../../query/user";
 import update from "immutability-helper";
 import { ALL_USER_TYPES } from "../../../query/userType";
+import { SET_ALERT, GET_ALERT } from "../../../query/alert";
 
 const updateCache = (cache, { data: { createUser } }) => {
   let { users } = cache.readQuery({ query: GET_USERS });
+
   cache.writeQuery({
     query: GET_USERS,
     data: {
@@ -33,7 +35,9 @@ const updateCacheFromUserUpdate = (cache, { data: { updateUser } }) => {
   let { users } = cache.readQuery({
     query: GET_USERS
   });
+
   let index = users.findIndex(u => u.id == updateUser.id);
+
   cache.writeQuery({
     query: GET_USERS,
     data: {
@@ -53,6 +57,12 @@ const UserForm = props => {
             </CardBody>
           );
         if (data) {
+          <Alert color="success">
+            <p>
+              <strong> สำเร็จ !</strong>
+              ข้อมูลของคุณได้ถูกบันทึกเรียบร้อยแล้ว
+            </p>
+          </Alert>;
           props.toggleForm();
           props.clearInput();
         }
@@ -71,8 +81,27 @@ const UserForm = props => {
               ""
             )}
             <Mutation mutation={UPDATE_USER} update={updateCacheFromUserUpdate}>
-              {(updateUser, { loading, error, data }) => {
+              {(updateUser, { loading, error, data, client }) => {
                 if (data) {
+                  let data = client.readQuery({
+                    query: GET_ALERT
+                  });
+
+                  client.writeQuery({
+                    query: GET_ALERT,
+                    data: update(data, {
+                      alert: {
+                        $set: {
+                          status: true,
+                          color: "success",
+                          message: "ข้อมูลของคุณได้ถูกบันทึกเรียบร้อยแล้ว",
+                          title: "สำเร็จ ! ",
+                          __typename: "Alert"
+                        }
+                      }
+                    })
+                  });
+
                   props.toggleForm();
                   props.clearInput();
                 }

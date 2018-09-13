@@ -6,6 +6,9 @@ import { HttpLink } from "apollo-link-http";
 import { ApolloLink, from } from "apollo-link";
 import { withClientState } from "apollo-link-state";
 import { onError } from "apollo-link-error";
+import defaults from "./state/defaults";
+import resolvers from "./state/resolvers";
+import typeDefs from "./state/typeDefs";
 
 const link = new HttpLink({
   uri: config.graphql.clientUrl
@@ -25,10 +28,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const cache = new InMemoryCache();
 
 const linkState = new withClientState({
-  cache
-  // resolvers,
-  // typeDefs,
-  // defaults
+  cache,
+  resolvers,
+  typeDefs,
+  defaults
 });
 const client = new ApolloClient({
   link: from([linkState, errorLink, link]),
