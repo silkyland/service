@@ -38,13 +38,18 @@ export default {
     },
     {
       name: "ทั่วไป",
-      url: "/base",
+      url: "/other",
       icon: "icon-puzzle",
       children: [
         {
           name: "พื้นที่จัดการศึกษา",
-          url: "/base/breadcrumbs",
+          url: "/other/breadcrumbs",
           icon: "icon-puzzle"
+        },
+        {
+          name: "ระบบปฏิบัติการ",
+          url: "/admin/other/operatingSystem",
+          icon: "fa fa-cubes"
         }
       ]
     },
