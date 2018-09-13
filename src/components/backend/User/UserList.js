@@ -1,10 +1,11 @@
-import React from "react";
-import { Card, CardBody, CardHeader, Table, Button } from "reactstrap";
-import gql from "graphql-tag";
-import { Query, withApollo, ApolloConsumer } from "react-apollo";
-import { Dots } from "react-activity";
+import update from "immutability-helper";
 import moment from "moment";
-import { GET_USERS, GET_USER } from "../../../query/user";
+import React from "react";
+import { Dots } from "react-activity";
+import { ApolloConsumer, Mutation, Query, withApollo } from "react-apollo";
+import { Button, Table } from "reactstrap";
+import swal from "sweetalert2";
+import { DELETE_USER, GET_USER, GET_USERS } from "../../../query/user";
 
 const UserList = props => (
   <Query query={GET_USERS}>
@@ -44,7 +45,7 @@ const UserList = props => (
                             const { data } = await client.query({
                               query: GET_USER,
                               variables: { id: u.id }
-                            })
+                            });
                             props.onEditButtonClicked({
                               id: data.user.id,
                               userTypeId: data.user.userType.id,
@@ -53,19 +54,66 @@ const UserList = props => (
                               email: data.user.email,
                               createdAt: data.user.createdAt,
                               updatedAt: data.user.updatedAt
-                            })
-                          }
-                          }
+                            });
+                          }}
                         >
                           <i className="fa fa-edit" /> แก้ไข
                         </Button>
                       );
                     }}
-                  </ApolloConsumer>
-                  {" "}
-                  <Button color="danger" size="sm">
-                    <i className="fa fa-times" /> ลบ
-                  </Button>
+                  </ApolloConsumer>{" "}
+                  <Mutation
+                    mutation={DELETE_USER}
+                    update={(cache, { data: { deleteUser } }) => {
+                      let data = cache.readQuery({
+                        query: GET_USERS
+                      });
+
+                      let users = data.users.filter(
+                        user => user.id != deleteUser.id
+                      );
+                      cache.writeQuery({
+                        query: GET_USERS,
+                        data: update(data, {
+                          users: {
+                            $set: users
+                          }
+                        })
+                      });
+                      swal("เรียบร้อย !", "ข้่อมูลของคุณถูกลบแล้ว.", "success");
+                    }}
+                  >
+                    {(deleteUser, { loading, error, client }) => {
+                      if (error)
+                        swal({
+                          type: "warning",
+                          title: "Oops! Something went wrong!",
+                          showConfirmButton: false,
+                          text: error.message
+                        });
+                      return (
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onClick={() => {
+                            swal({
+                              title: "แน่ใจหรือไม่?",
+                              text: "การลบข้อมูลไม่สามารถกู้กลับมาคืนได้!",
+                              type: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ใช่, ลบเลย!"
+                            }).then(result => {
+                              if (result.value) {
+                                deleteUser({ variables: { id: u.id } });
+                              }
+                            });
+                          }}
+                        >
+                          <i className="fa fa-times" /> ลบ
+                        </Button>
+                      );
+                    }}
+                  </Mutation>
                 </td>
               </tr>
             ))}
