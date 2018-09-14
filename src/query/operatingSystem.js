@@ -5,6 +5,7 @@ export const GET_OPERATING_SYSTEMS = gql`
     operatingSystems {
       id
       name
+      version
       build
       year
       comment

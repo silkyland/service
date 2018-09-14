@@ -25,7 +25,7 @@ class OperatingSystem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: true,
+      isOpen: false,
       isEdit: false,
       input: {
         id: "",
@@ -42,23 +42,29 @@ class OperatingSystem extends Component {
     };
     this.toggleForm = this.toggleForm.bind(this);
     this.onInputChangeHander = this.onInputChangeHander.bind(this);
-    this.handleSubmitForm = this.handleSubmitForm.bind(this);
   }
 
   toggleForm() {
     let oldState = this.state.button;
     oldState["color"] = !this.state.isOpen ? "danger" : "primary";
-    this.setState({ button: oldState, isOpen: !this.state.isOpen });
+    this.setState({
+      button: oldState,
+      isOpen: !this.state.isOpen,
+      input: {
+        id: "",
+        name: "",
+        version: "",
+        build: "",
+        year: new Date().getFullYear(),
+        comment: ""
+      }
+    });
   }
 
   onInputChangeHander(e) {
     let oldInput = this.state.input;
     oldInput[e.target.name] = e.target.value;
     this.setState({ input: oldInput });
-  }
-
-  handleSubmitForm(e) {
-    e.preventDefault();
   }
 
   render() {
@@ -88,16 +94,23 @@ class OperatingSystem extends Component {
               <h4>โปรดกรอกข้อมูลให้ครบถ้วน</h4>
               <Mutation
                 mutation={CREATE_OPERATING_SYSTEM}
-                update={(cache, { date: { createOperatingSystem } }) => {
+                update={(cache, { data: { createOperatingSystem } }) => {
                   let data = cache.readQuery({
                     query: GET_OPERATING_SYSTEMS
                   });
                   cache.writeQuery({
                     query: GET_OPERATING_SYSTEMS,
                     data: update(data, {
-                      operatingSystems: { $push: createOperatingSystem }
+                      operatingSystems: { $push: [createOperatingSystem] }
                     })
                   });
+
+                  swal(
+                    "สำเร็จ !",
+                    "ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว",
+                    "success"
+                  );
+                  this.toggleForm();
                 }}
               >
                 {(createOperatingSystem, { error, loading }) => {
@@ -124,6 +137,12 @@ class OperatingSystem extends Component {
                               }
                             })
                           });
+                          swal(
+                            "สำเร็จ !",
+                            "ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว",
+                            "success"
+                          );
+                          this.toggleForm();
                         }}
                       >
                         {(updateOperatingSystem, { error, loading }) => {
@@ -136,13 +155,25 @@ class OperatingSystem extends Component {
                                   <p>{error.message}</p>
                                 </Alert>
                               ) : null}
-                              <Form onSubmit={this.handleSubmitForm}>
+                              <Form
+                                onSubmit={e => {
+                                  e.preventDefault();
+                                  this.state.isEdit
+                                    ? updateOperatingSystem({
+                                        variables: this.state.input
+                                      })
+                                    : createOperatingSystem({
+                                        variables: this.state.input
+                                      });
+                                }}
+                              >
                                 <FormGroup>
                                   <Label>
                                     ชื่อระบบปฏิบัติการ :
                                     <span className="text-danger"> *</span>
                                   </Label>
                                   <Input
+                                    autoFocus
                                     type="text"
                                     required
                                     name="name"
@@ -195,18 +226,7 @@ class OperatingSystem extends Component {
                                 <p className="text-danger">
                                   * หมายถึง จำเป็นต้องกรอกข้อมูล
                                 </p>
-                                <Button
-                                  color="primary"
-                                  onClick={() => {
-                                    this.state.isEdit
-                                      ? updateOperatingSystem({
-                                          variables: this.state.input
-                                        })
-                                      : createOperatingSystem({
-                                          variables: this.state.input
-                                        });
-                                  }}
-                                >
+                                <Button color="primary">
                                   <i className="fa fa-save" /> บันทึก
                                 </Button>
                               </Form>
@@ -251,12 +271,10 @@ class OperatingSystem extends Component {
                           == ไม่พบข้อมูล =={" "}
                         </td>
                       </tr>
-                    ) : (
-                      ""
-                    )}
+                    ) : null}
                     {data.operatingSystems.map((os, index) => (
-                      <tr>
-                        <td>{index}</td>
+                      <tr key={index}>
+                        <td>{index + 1}</td>
                         <td>{os.name}</td>
                         <td>{os.version}</td>
                         <td>{os.build}</td>
@@ -264,10 +282,10 @@ class OperatingSystem extends Component {
                         <td>{os.comment}</td>
                         <td>
                           <Button color="warning" size="sm">
-                            <i className="fa fa-edit" />
-                          </Button>
+                            <i className="fa fa-edit" /> แก้ไข
+                          </Button>{" "}
                           <Button color="danger" size="sm">
-                            <i className="fa fa-times" />
+                            <i className="fa fa-times" /> ลบ
                           </Button>
                         </td>
                       </tr>
