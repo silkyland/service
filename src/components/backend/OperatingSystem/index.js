@@ -13,14 +13,20 @@ import {
 } from "reactstrap";
 import { Dots } from "react-activity";
 import swal from "sweetalert2";
-import { Query } from "react-apollo";
-import { GET_OPERATING_SYSTEMS } from "../../../query/operatingSystem";
+import { Query, Mutation } from "react-apollo";
+import {
+  GET_OPERATING_SYSTEMS,
+  UPDATE_OPERATING_SYSTEM,
+  CREATE_OPERATING_SYSTEM
+} from "../../../query/operatingSystem";
+import update from "immutability-helper";
 
 class OperatingSystem extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: true,
+      isEdit: false,
       input: {
         id: "",
         name: "",
@@ -36,6 +42,7 @@ class OperatingSystem extends Component {
     };
     this.toggleForm = this.toggleForm.bind(this);
     this.onInputChangeHander = this.onInputChangeHander.bind(this);
+    this.handleSubmitForm = this.handleSubmitForm.bind(this);
   }
 
   toggleForm() {
@@ -48,6 +55,10 @@ class OperatingSystem extends Component {
     let oldInput = this.state.input;
     oldInput[e.target.name] = e.target.value;
     this.setState({ input: oldInput });
+  }
+
+  handleSubmitForm(e) {
+    e.preventDefault();
   }
 
   render() {
@@ -75,66 +86,138 @@ class OperatingSystem extends Component {
           {this.state.isOpen ? (
             <CardBody>
               <h4>โปรดกรอกข้อมูลให้ครบถ้วน</h4>
-              <Form>
-                <FormGroup>
-                  <Label>
-                    ชื่อระบบปฏิบัติการ :<span className="text-danger"> *</span>
-                  </Label>
-                  <Input
-                    type="text"
-                    required
-                    name="name"
-                    placeholder="กรอกระบบปฏิบัติการ"
-                    onChange={this.onInputChangeHander}
-                    value={this.state.input.name}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>เวอร์ชั่น: </Label>
-                  <Input
-                    type="text"
-                    name="version"
-                    placeholder="กรอกเวอร์ชั่น"
-                    onChange={this.onInputChangeHander}
-                    value={this.state.input.version}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>หมายเลขบิวด์ :</Label>
-                  <Input
-                    type="text"
-                    name="build"
-                    placeholder="กรอกหมายเลขบิวต์"
-                    onChange={this.onInputChangeHander}
-                    value={this.state.input.build}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>ปี :</Label>
-                  <Input
-                    type="number"
-                    name="year"
-                    maxLength={4}
-                    placeholder="กรอกหมายเลขบิวต์"
-                    onChange={this.onInputChangeHander}
-                    value={this.state.input.year}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>หมายเหตุ :</Label>
-                  <Input
-                    type="text"
-                    name="comment"
-                    placeholder="กรอกหมายเหตุ"
-                    onChange={this.onInputChangeHander}
-                    value={this.state.input.comment}
-                  />
-                </FormGroup>
-                <p className="text-danger">* หมายถึง จำเป็นต้องกรอกข้อมูล</p>
-                <Button color="primary">
-                  <i className="fa fa-save" /> บันทึก
-                </Button>
-              </Form>
+              <Mutation
+                mutation={CREATE_OPERATING_SYSTEM}
+                update={(cache, { date: { createOperatingSystem } }) => {
+                  let data = cache.readQuery({
+                    query: GET_OPERATING_SYSTEMS
+                  });
+                  cache.writeQuery({
+                    query: GET_OPERATING_SYSTEMS,
+                    data: update(data, {
+                      operatingSystems: { $push: createOperatingSystem }
+                    })
+                  });
+                }}
+              >
+                {(createOperatingSystem, { error, loading }) => {
+                  if (loading) return <Dots />;
+                  return (
+                    <React.Fragment>
+                      {error ? (
+                        <Alert color="danger">
+                          <h4>ผิดพลาด !</h4>
+                          <p>{error.message}</p>
+                        </Alert>
+                      ) : null}
+                      <Mutation
+                        mutation={UPDATE_OPERATING_SYSTEM}
+                        update={(cache, { data: updateOperatingSystem }) => {
+                          let data = cache.readQuery({
+                            query: GET_OPERATING_SYSTEMS
+                          });
+                          cache.writeQuery({
+                            query: GET_OPERATING_SYSTEMS,
+                            data: update(data, {
+                              operatingSystems: {
+                                $set: updateOperatingSystem
+                              }
+                            })
+                          });
+                        }}
+                      >
+                        {(updateOperatingSystem, { error, loading }) => {
+                          if (loading) return <Dots />;
+                          return (
+                            <React.Fragment>
+                              {error ? (
+                                <Alert color="danger">
+                                  <h4>ผิดพลาด !</h4>
+                                  <p>{error.message}</p>
+                                </Alert>
+                              ) : null}
+                              <Form onSubmit={this.handleSubmitForm}>
+                                <FormGroup>
+                                  <Label>
+                                    ชื่อระบบปฏิบัติการ :
+                                    <span className="text-danger"> *</span>
+                                  </Label>
+                                  <Input
+                                    type="text"
+                                    required
+                                    name="name"
+                                    placeholder="กรอกระบบปฏิบัติการ"
+                                    onChange={this.onInputChangeHander}
+                                    value={this.state.input.name}
+                                  />
+                                </FormGroup>
+                                <FormGroup>
+                                  <Label>เวอร์ชั่น: </Label>
+                                  <Input
+                                    type="text"
+                                    name="version"
+                                    placeholder="กรอกเวอร์ชั่น"
+                                    onChange={this.onInputChangeHander}
+                                    value={this.state.input.version}
+                                  />
+                                </FormGroup>
+                                <FormGroup>
+                                  <Label>หมายเลขบิวด์ :</Label>
+                                  <Input
+                                    type="text"
+                                    name="build"
+                                    placeholder="กรอกหมายเลขบิวต์"
+                                    onChange={this.onInputChangeHander}
+                                    value={this.state.input.build}
+                                  />
+                                </FormGroup>
+                                <FormGroup>
+                                  <Label>ปี :</Label>
+                                  <Input
+                                    type="number"
+                                    name="year"
+                                    maxLength={4}
+                                    placeholder="กรอกหมายเลขบิวต์"
+                                    onChange={this.onInputChangeHander}
+                                    value={this.state.input.year}
+                                  />
+                                </FormGroup>
+                                <FormGroup>
+                                  <Label>หมายเหตุ :</Label>
+                                  <Input
+                                    type="text"
+                                    name="comment"
+                                    placeholder="กรอกหมายเหตุ"
+                                    onChange={this.onInputChangeHander}
+                                    value={this.state.input.comment}
+                                  />
+                                </FormGroup>
+                                <p className="text-danger">
+                                  * หมายถึง จำเป็นต้องกรอกข้อมูล
+                                </p>
+                                <Button
+                                  color="primary"
+                                  onClick={() => {
+                                    this.state.isEdit
+                                      ? updateOperatingSystem({
+                                          variables: this.state.input
+                                        })
+                                      : createOperatingSystem({
+                                          variables: this.state.input
+                                        });
+                                  }}
+                                >
+                                  <i className="fa fa-save" /> บันทึก
+                                </Button>
+                              </Form>
+                            </React.Fragment>
+                          );
+                        }}
+                      </Mutation>
+                    </React.Fragment>
+                  );
+                }}
+              </Mutation>
             </CardBody>
           ) : null}
           <Query query={GET_OPERATING_SYSTEMS}>
@@ -162,7 +245,16 @@ class OperatingSystem extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.map((os, index) => (
+                    {data.operatingSystems.length < 1 ? (
+                      <tr>
+                        <td colSpan={7} className="text-center">
+                          == ไม่พบข้อมูล =={" "}
+                        </td>
+                      </tr>
+                    ) : (
+                      ""
+                    )}
+                    {data.operatingSystems.map((os, index) => (
                       <tr>
                         <td>{index}</td>
                         <td>{os.name}</td>
