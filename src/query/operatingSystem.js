@@ -1,5 +1,20 @@
 import gql from "graphql-tag";
 
+export const GET_OPERATING_SYSTEM = gql`
+  query getOperatingSystem($id: ID) {
+    getOperatingSystem(id: $id) {
+      id
+      name
+      version
+      build
+      year
+      comment
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GET_OPERATING_SYSTEMS = gql`
   {
     operatingSystems {

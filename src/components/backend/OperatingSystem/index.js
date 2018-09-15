@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import { Dots } from "react-activity";
 import swal from "sweetalert2";
-import { Query, Mutation } from "react-apollo";
+import { Query, Mutation, ApolloConsumer } from "react-apollo";
 import {
   GET_OPERATING_SYSTEMS,
   UPDATE_OPERATING_SYSTEM,
@@ -57,7 +57,8 @@ class OperatingSystem extends Component {
         build: "",
         year: new Date().getFullYear(),
         comment: ""
-      }
+      },
+      isEdit: false
     });
   }
 
@@ -129,11 +130,16 @@ class OperatingSystem extends Component {
                           let data = cache.readQuery({
                             query: GET_OPERATING_SYSTEMS
                           });
+                          let index = data.operatingSystems.findIndex(
+                            os => os.id == updateOperatingSystem.id
+                          );
                           cache.writeQuery({
                             query: GET_OPERATING_SYSTEMS,
                             data: update(data, {
                               operatingSystems: {
-                                $set: updateOperatingSystem
+                                [index]: {
+                                  $set: updateOperatingSystem
+                                }
                               }
                             })
                           });
@@ -281,7 +287,24 @@ class OperatingSystem extends Component {
                         <td>{os.year}</td>
                         <td>{os.comment}</td>
                         <td>
-                          <Button color="warning" size="sm">
+                          <Button
+                            color="warning"
+                            size="sm"
+                            onClick={() => {
+                              this.toggleForm();
+                              this.setState({
+                                input: {
+                                  id: os.id,
+                                  name: os.name,
+                                  version: os.version,
+                                  build: os.build,
+                                  year: os.year,
+                                  comment: os.comment
+                                },
+                                isEdit: true
+                              });
+                            }}
+                          >
                             <i className="fa fa-edit" /> แก้ไข
                           </Button>{" "}
                           <Button color="danger" size="sm">
