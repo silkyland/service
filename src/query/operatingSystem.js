@@ -88,7 +88,7 @@ export const UPDATE_OPERATING_SYSTEM = gql`
 
 export const DELETE_OPERATING_SYSTEM = gql`
   mutation deleteOperatingSystem($id: ID!) {
-    updateOperatingSystem(id: $id) {
+    deleteOperatingSystem(id: $id) {
       id
     }
   }

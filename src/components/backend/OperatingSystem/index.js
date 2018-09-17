@@ -17,7 +17,9 @@ import { Query, Mutation, ApolloConsumer } from "react-apollo";
 import {
   GET_OPERATING_SYSTEMS,
   UPDATE_OPERATING_SYSTEM,
-  CREATE_OPERATING_SYSTEM
+  CREATE_OPERATING_SYSTEM,
+  DELETE_OPERATING_SYSTEM,
+  GET_OPERATING_SYSTEM
 } from "../../../query/operatingSystem";
 import update from "immutability-helper";
 
@@ -307,9 +309,64 @@ class OperatingSystem extends Component {
                           >
                             <i className="fa fa-edit" /> แก้ไข
                           </Button>{" "}
-                          <Button color="danger" size="sm">
-                            <i className="fa fa-times" /> ลบ
-                          </Button>
+                          <Mutation
+                            mutation={DELETE_OPERATING_SYSTEM}
+                            update={(
+                              cache,
+                              { data: { deleteOperatingSystem } }
+                            ) => {
+                              let data = cache.readQuery({
+                                query: GET_OPERATING_SYSTEMS
+                              });
+                              const removedData = data.operatingSystems.filter(
+                                o => o.id !== deleteOperatingSystem.id
+                              );
+                              cache.writeQuery({
+                                query: GET_OPERATING_SYSTEMS,
+                                data: update(data, {
+                                  operatingSystems: {
+                                    $set: removedData
+                                  }
+                                })
+                              });
+                            }}
+                          >
+                            {(deleteOperatingSystem, { error, loading }) => {
+                              if (error)
+                                swal({
+                                  type: "warning",
+                                  title: "Oops! Something went wrong!",
+                                  showConfirmButton: false,
+                                  text: error.message
+                                });
+                              return (
+                                <Button
+                                  color="danger"
+                                  size="sm"
+                                  onClick={() => {
+                                    swal({
+                                      title: "แน่ใจหรือไม่?",
+                                      text:
+                                        "การลบข้อมูลไม่สามารถกู้กลับมาคืนได้!",
+                                      type: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonText: "ใช่, ลบเลย!"
+                                    }).then(result => {
+                                      if (result.value) {
+                                        deleteOperatingSystem({
+                                          variables: {
+                                            id: os.id
+                                          }
+                                        });
+                                      }
+                                    });
+                                  }}
+                                >
+                                  <i className="fa fa-times" /> ลบ
+                                </Button>
+                              );
+                            }}
+                          </Mutation>
                         </td>
                       </tr>
                     ))}

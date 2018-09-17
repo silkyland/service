@@ -43,7 +43,7 @@ export default {
       children: [
         {
           name: "พื้นที่จัดการศึกษา",
-          url: "/other/breadcrumbs",
+          url: "/admin/other/campus",
           icon: "icon-puzzle"
         },
         {

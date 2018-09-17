@@ -4,6 +4,7 @@ import Backend from "./components/backend";
 import User from "./components/backend/User";
 import DashBoard from "./components/backend/Dashboard";
 import OperatingSystem from "./components/backend/OperatingSystem";
+import Campus from "./components/backend/Campus";
 
 function Loading() {
   return <div>Loading...</div>;
@@ -17,6 +18,11 @@ const routes = [
     path: "/admin/other/operatingSystem",
     name: "จัดการระบบปฏิบัติการ",
     component: OperatingSystem
+  },
+  {
+    path: "/admin/other/campus",
+    name: "พื้นที่จัดการศึกษา",
+    component: Campus
   }
 ];
 
