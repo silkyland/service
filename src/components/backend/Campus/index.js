@@ -63,6 +63,10 @@ class Campus extends Component {
     });
   }
 
+  componentDidMount() {
+    document.title = "จัดการทั่วไป » พื้นที่จัดการศึกษา";
+  }
+
   onInputChangeHandler(e) {
     let oldInput = this.state.input;
     oldInput[e.target.name] = e.target.value;

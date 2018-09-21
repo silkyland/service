@@ -45,7 +45,9 @@ class OperatingSystem extends Component {
     this.toggleForm = this.toggleForm.bind(this);
     this.onInputChangeHander = this.onInputChangeHander.bind(this);
   }
-
+  componentDidMount() {
+    document.title = "จัดการทั่วไป » ระบบปฏิบัติการ";
+  }
   toggleForm() {
     let oldState = this.state.button;
     oldState["color"] = !this.state.isOpen ? "danger" : "primary";

@@ -25,7 +25,8 @@ const routes = [
   { path: "/admin", exact: true, name: "Home", component: Backend },
   { path: "/admin/dashboard", name: "Dashboard", component: DashBoard },
   { path: "/admin/users", name: "จัดการผู้ใช้งาน", component: User },
-
+  { path: "/admin/users", name: "จัดการผู้ใช้งาน", component: User },
+  // { path: "/admin/other", name: "จัดการทั่วไป" },
   {
     path: "/admin/other/campus",
     name: "พื้นที่จัดการศึกษา",
@@ -73,7 +74,7 @@ const routes = [
   },
   {
     path: "/admin/other/clientType",
-    name: "ประเภทผู้ใช้",
+    name: "ประเภทผู้ขอรับบริการ",
     component: ClientType
   },
   {

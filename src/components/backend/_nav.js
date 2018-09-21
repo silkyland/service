@@ -37,8 +37,8 @@ export default {
       name: "จัดการ"
     },
     {
-      name: "ทั่วไป",
-      url: "/other",
+      name: "จัดการทั่วไป",
+      url: "/admin/other",
       icon: "icon-puzzle",
       children: [
         {
@@ -67,12 +67,12 @@ export default {
           icon: "fa fa-users"
         },
         {
-          name: "ประเภทผู้ขอบริการ",
+          name: "ประเภทผู้ขอรับบริการ",
           url: "/admin/other/clientType",
           icon: "fa fa-folder-o"
         },
         {
-          name: "สังกัด",
+          name: "หน่วยงานและคณะ",
           url: "/admin/other/department",
           icon: "fa fa-building"
         },
@@ -99,7 +99,7 @@ export default {
         {
           name: "โปรแกรมสำนักงาน",
           url: "/admin/other/office",
-          icon: "fa fa-cubes"
+          icon: "fa fa-briefcase"
         },
         {
           name: "สถานะ",
