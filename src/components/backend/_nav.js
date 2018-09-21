@@ -54,12 +54,12 @@ export default {
         {
           name: "โปรแกรม",
           url: "/admin/other/application",
-          icon: "fa fa-cubes"
+          icon: "fa fa-chrome"
         },
         {
           name: "ยี่ห้อ",
           url: "/admin/other/brand",
-          icon: "fa fa-cubes"
+          icon: "fa fa-apple"
         },
         {
           name: "ผู้มาขอบริการ",
@@ -69,22 +69,22 @@ export default {
         {
           name: "ประเภทผู้ขอบริการ",
           url: "/admin/other/clientType",
-          icon: "fa fa-cubes"
+          icon: "fa fa-folder-o"
         },
         {
           name: "สังกัด",
           url: "/admin/other/department",
-          icon: "fa fa-cubes"
+          icon: "fa fa-building"
         },
         {
           name: "อุปกรณ์",
           url: "/admin/other/device",
-          icon: "fa fa-cubes"
+          icon: "fa fa-mobile"
         },
         {
           name: "ประเภทอุปกรณ์",
           url: "/admin/other/deviceType",
-          icon: "fa fa-cubes"
+          icon: "fa fa-folder"
         },
         {
           name: "สิ่งที่นำมาด้วย",
@@ -94,7 +94,7 @@ export default {
         {
           name: "ปัญหา",
           url: "/admin/other/issue",
-          icon: "fa fa-cubes"
+          icon: "fa fa-exclamation-circle"
         },
         {
           name: "โปรแกรมสำนักงาน",
@@ -104,7 +104,7 @@ export default {
         {
           name: "สถานะ",
           url: "/admin/other/status",
-          icon: "fa fa-cubes"
+          icon: "fa fa-tasks"
         }
         // {
         //   name: "ยี่ห้อ",
