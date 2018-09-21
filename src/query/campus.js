@@ -1,5 +1,16 @@
 import gql from "graphql-tag";
 
+export const GET_CAMPUS = gql`
+  query campus($id: ID!) {
+    campus(id: $id) {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GET_CAMPUSES = gql`
   {
     campuses {

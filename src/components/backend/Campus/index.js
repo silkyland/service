@@ -17,7 +17,8 @@ import {
   GET_CAMPUSES,
   CREATE_CAMPUS,
   UPDATE_CAMPUS,
-  DELETE_CAMPUS
+  DELETE_CAMPUS,
+  GET_CAMPUS
 } from "../../../query/campus";
 import swal from "sweetalert2";
 import update from "immutability-helper";
@@ -72,7 +73,7 @@ class Campus extends Component {
     return (
       <Card>
         <CardHeader>
-          พื้นที่จัดการศึกษา
+          <i className="icon icon-puzzle" /> พื้นที่จัดการศึกษา
           <Button
             className="pull-right"
             size={this.state.mainButton.size}
@@ -100,7 +101,26 @@ class Campus extends Component {
               {(createCampus, { error, loading }) => {
                 if (loading) return <Dots />;
                 return (
-                  <Mutation mutation={UPDATE_CAMPUS}>
+                  <Mutation
+                    mutation={UPDATE_CAMPUS}
+                    update={(cache, { data: { updateCampus } }) => {
+                      let data = cache.readQuery({
+                        query: GET_CAMPUSES
+                      });
+
+                      let index = data.campuses.findIndex(
+                        cp => cp.id === updateCampus.id
+                      );
+                      cache.writeQuery({
+                        query: GET_CAMPUSES,
+                        data: update(data, {
+                          campuses: { [index]: { $set: updateCampus } }
+                        })
+                      });
+                      swal("สำเร็จ", "บันทึกข้อมูลสำเร็จแล้ว !", "success");
+                      this.toggleMainButton();
+                    }}
+                  >
                     {(updateCampus, { error, loading }) => {
                       if (loading) return <Dots />;
                       return (
@@ -193,7 +213,28 @@ class Campus extends Component {
                             >
                               <i className="fa fa-edit" /> แก้ไข
                             </Button>{" "}
-                            <Mutation mutation={DELETE_CAMPUS}>
+                            <Mutation
+                              mutation={DELETE_CAMPUS}
+                              update={(cache, { data: { deleteCampus } }) => {
+                                let data = cache.readQuery({
+                                  query: GET_CAMPUSES
+                                });
+                                let campuses = data.campuses.filter(
+                                  cp => cp.id !== deleteCampus.id
+                                );
+                                cache.writeQuery({
+                                  query: GET_CAMPUSES,
+                                  data: update(data, {
+                                    campuses: { $set: campuses }
+                                  })
+                                });
+                                swal(
+                                  "สำเร็จ !",
+                                  "ข้อมูลของคุณได้ถูกลบเรียบร้อยแล้ว",
+                                  "success"
+                                );
+                              }}
+                            >
                               {(deleteCampus, { error, loading }) => {
                                 if (error)
                                   swal({
