@@ -113,7 +113,7 @@ const UserForm = props => {
                         ? createUser({
                             variables: {
                               name: props.input.name,
-                              userTypeId: props.input.userTypeId,
+                              role: props.input.role,
                               username: props.input.username,
                               email: props.input.email,
                               password: props.input.password,
@@ -123,7 +123,7 @@ const UserForm = props => {
                         : updateUser({
                             variables: {
                               id: props.input.id,
-                              userTypeId: props.input.userTypeId,
+                              role: props.input.role,
                               name: props.input.name,
                               username: props.input.username,
                               email: props.input.email
@@ -133,26 +133,16 @@ const UserForm = props => {
                   >
                     <FormGroup>
                       <Label>ประเภทผู้ใช้งาน :</Label>
-                      <Query query={ALL_USER_TYPES}>
-                        {({ loading, error, data }) => {
-                          if (loading) return <Dots />;
-                          if (error) return `Error! ${error.message}`;
-                          return (
-                            <Input
-                              type="select"
-                              onChange={props.onInputChangeHandler}
-                              name="userTypeId"
-                              defaultValue={props.input.userTypeId}
-                            >
-                              {data.userTypes.map((ut, index) => (
-                                <option key={index} value={ut.id}>
-                                  {ut.name}
-                                </option>
-                              ))}
-                            </Input>
-                          );
-                        }}
-                      </Query>
+
+                      <Input
+                        type="select"
+                        onChange={props.onInputChangeHandler}
+                        name="role"
+                        defaultValue={props.input.role}
+                      >
+                        <option value="Admin">ADMIN</option>
+                        <option value="Admin">USER</option>
+                      </Input>
                     </FormGroup>
                     <FormGroup>
                       <Label>ชื่อผู้ใช้ :</Label>

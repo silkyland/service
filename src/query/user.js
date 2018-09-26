@@ -4,10 +4,7 @@ export const GET_USERS = gql`
   {
     users {
       id
-      userType {
-        id
-        name
-      }
+      role
       name
       username
       email
@@ -19,12 +16,9 @@ export const GET_USERS = gql`
 
 export const GET_USER = gql`
   query user($id: ID!) {
-    user(id: $id) {
+    user(where: { id: $id }) {
       id
-      userType {
-        id
-        name
-      }
+      role
       name
       username
       email
@@ -37,14 +31,14 @@ export const GET_USER = gql`
 export const UPDATE_USER = gql`
   mutation updateUser(
     $id: ID!
-    $userTypeId: Int
-    $name: String
-    $username: String
-    $email: String
+    $role: Role!
+    $name: String!
+    $username: String!
+    $email: String!
   ) {
     updateUser(
       id: $id
-      userTypeId: $userTypeId
+      Role: $Role
       name: $name
       username: $username
       email: $email
@@ -73,26 +67,25 @@ export const DELETE_USER = gql`
 
 export const CREATE_USER = gql`
   mutation createUser(
-    $name: String
-    $userTypeId: Int
-    $username: String
-    $email: String
-    $password: String
-    $confirmPassword: String
+    $name: String!
+    $role: String!
+    $username: String!
+    $email: String!
+    $password: String!
+    $confirmPassword: String!
   ) {
     createUser(
-      name: $name
-      userTypeId: $userTypeId
-      username: $username
-      email: $email
-      password: $password
-      confirmPassword: $confirmPassword
+      data: {
+        name: $name
+        role: $role
+        username: $username
+        email: $email
+        password: $password
+        confirmPassword: $confirmPassword
+      }
     ) {
       id
-      userType {
-        id
-        name
-      }
+      role
       name
       username
       email

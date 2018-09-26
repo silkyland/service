@@ -14,7 +14,7 @@ class User extends Component {
       input: {
         id: "",
         username: "",
-        userTypeId: 1,
+        role: "USER",
         name: "",
         email: "",
         password: "",
@@ -32,7 +32,7 @@ class User extends Component {
       input: {
         id: "",
         username: "",
-        userTypeId: 1,
+        role: "USER",
         name: "",
         email: "",
         password: "",

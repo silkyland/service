@@ -29,7 +29,7 @@ const UserList = props => (
             {data.users.map((u, index) => (
               <tr key={u.name}>
                 <td>{index + 1}</td>
-                <td>{u.userType.name}</td>
+                <td>{u.role}</td>
                 <td>{u.name}</td>
                 <td>{u.username}</td>
                 <td>{u.email}</td>
@@ -48,7 +48,7 @@ const UserList = props => (
                             });
                             props.onEditButtonClicked({
                               id: data.user.id,
-                              userTypeId: data.user.userType.id,
+                              role: data.user.role,
                               name: data.user.name,
                               username: data.user.username,
                               email: data.user.email,
