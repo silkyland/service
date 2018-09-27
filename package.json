@@ -10,6 +10,7 @@
     "apollo-cache-inmemory": "^1.2.9",
     "apollo-link-state": "^0.4.1",
     "axios": "^0.18.0",
+    "bcrypt": "^3.0.1",
     "flag-icon-css": "^3.0.0",
     "font-awesome": "^4.7.0",
     "graphql": "^14.0.0",
@@ -30,7 +31,8 @@
     "redux-thunk": "^2.3.0",
     "simple-line-icons": "^2.4.1",
     "sweetalert-react": "^0.4.11",
-    "sweetalert2": "^7.26.28"
+    "sweetalert2": "^7.26.28",
+    "validatorjs": "^3.14.2"
   },
   "scripts": {
     "start": "react-scripts start",

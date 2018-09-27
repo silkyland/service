@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { Card, CardHeader, Button, CardBody } from "reactstrap";
-import UserList from "./UserList";
+import { Alert, Button, Card, CardHeader } from "reactstrap";
 import UserForm from "./UserForm";
-import AlertLayout from "../../layout/AlertLayout";
-import { ApolloConsumer } from "react-apollo";
+import UserList from "./UserList";
 
 class User extends Component {
   constructor(props) {
@@ -11,6 +9,8 @@ class User extends Component {
     this.state = {
       isOpen: false,
       isUpdate: false,
+      isError: false,
+      errorMessage: "",
       input: {
         id: "",
         username: "",
@@ -25,10 +25,17 @@ class User extends Component {
     this.toggleForm = this.toggleForm.bind(this);
     this.onEditButtonClicked = this.onEditButtonClicked.bind(this);
     this.clearInput = this.clearInput.bind(this);
+    this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
+  }
+
+  toggleErrorMessage(state, message) {
+    this.setState({ isError: state, errorMessage: message });
   }
 
   clearInput() {
     this.setState({
+      isError: false,
+      errorMessage: "",
       input: {
         id: "",
         username: "",
@@ -81,6 +88,7 @@ class User extends Component {
               autoFocus={true}
               toggleForm={this.toggleForm}
               clearInput={this.clearInput}
+              toggleErrorMessage={this.toggleErrorMessage}
             />
           ) : null}
 
