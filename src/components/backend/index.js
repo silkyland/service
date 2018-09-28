@@ -22,6 +22,8 @@ import DefaultAside from "./DefaultAside";
 import DefaultFooter from "./DefaultFooter";
 import DefaultHeader from "./DefaultHeader";
 import AlertLayout from "../layout/AlertLayout";
+import { Query } from "react-apollo";
+import { GET_AUTH } from "../../query/auth";
 
 class Backend extends Component {
   render() {
@@ -40,23 +42,30 @@ class Backend extends Component {
           </AppSidebar>
           <main className="main">
             <AppBreadcrumb appRoutes={routes} />
-            <Container fluid>
-              <AlertLayout />
-              <Switch>
-                {routes.map((route, idx) => {
-                  return route.component ? (
-                    <Route
-                      key={idx}
-                      path={route.path}
-                      exact={route.exact}
-                      name={route.name}
-                      render={props => <route.component {...props} />}
-                    />
-                  ) : null;
-                })}
-                <Redirect from="/" to="/admin/dashboard" />
-              </Switch>
-            </Container>
+            <Query query={GET_AUTH}>
+              {({ auth }, error, loading) => {
+                return (
+                  <Container fluid>
+                    <AlertLayout />
+                    <Switch>
+                      {!auth ? <Redirect to="/login" /> : undefined}
+                      {routes.map((route, idx) => {
+                        return route.component ? (
+                          <Route
+                            key={idx}
+                            path={route.path}
+                            exact={route.exact}
+                            name={route.name}
+                            render={props => <route.component {...props} />}
+                          />
+                        ) : null;
+                      })}
+                      <Redirect from="/" to="/admin/dashboard" />
+                    </Switch>
+                  </Container>
+                );
+              }}
+            </Query>
           </main>
           <AppAside fixed hidden>
             <DefaultAside />

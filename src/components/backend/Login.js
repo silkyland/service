@@ -11,14 +11,39 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Row
+  Row,
+  Alert,
+  FormFeedback
 } from "reactstrap";
+import { Dots } from "react-activity";
+import { Mutation } from "react-apollo";
+import { LOGIN } from "../../query/auth";
+import Validator from "validatorjs";
+import { ApolloError } from "apollo-boost";
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      input: {
+        username: "",
+        password: ""
+      },
+      hasError: {}
+    };
+    this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
+    this.setErrorMessage = this.setErrorMessage.bind(this);
   }
 
+  setErrorMessage(message) {
+    this.setState({ hasError: message });
+  }
+
+  onInputChangeHandler(e) {
+    let oldState = this.state.input;
+    oldState[e.target.name] = e.target.value;
+    this.setState({ input: oldState });
+  }
+  componentDidMount() {}
   render() {
     return (
       <div className="app flex-row align-items-center">
@@ -27,48 +52,94 @@ class Login extends Component {
             <Col md="8">
               <CardGroup>
                 <Card className="p-4">
-                  <CardBody>
-                    <Form>
-                      <h1>เข้าสู่ระบบ</h1>
-                      <p className="text-muted">โปรดกรอกข้อมูลให้ครบถ้วน</p>
-                      <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-user" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          type="text"
-                          placeholder="ชื่อผู้ใช้งาน"
-                          autoComplete="username"
-                        />
-                      </InputGroup>
-                      <InputGroup className="mb-4">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-lock" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          type="password"
-                          placeholder="รหัสผ่าน"
-                          autoComplete="current-password"
-                        />
-                      </InputGroup>
-                      <Row>
-                        <Col xs="6">
-                          <Button color="primary" className="px-4">
-                            เข้าสู่ระบบ
-                          </Button>
-                        </Col>
-                        <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">
-                            ลืมรหัสผ่าน ?
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </CardBody>
+                  <Mutation mutation={LOGIN}>
+                    {(login, { error, loading, cache }) => {
+                      if (loading) return <Dots />;
+
+                      return (
+                        <CardBody>
+                          {error ? (
+                            <Alert color="danger">
+                              <h4>ผิดพลาด !</h4>
+                              <p>
+                                {error.graphQLErrors.map(({ message }) =>
+                                  message
+                                    .split(",")
+                                    .map((m, i) => <li key={i}>{m}</li>)
+                                )}
+                              </p>
+                            </Alert>
+                          ) : null}
+                          <Form
+                            onSubmit={e => {
+                              e.preventDefault();
+                              login({ variables: this.state.input });
+                            }}
+                          >
+                            <h1>เข้าสู่ระบบ</h1>
+                            <p className="text-muted">
+                              โปรดกรอกข้อมูลให้ครบถ้วน
+                            </p>
+                            <InputGroup className="mb-3">
+                              <InputGroupAddon addonType="prepend">
+                                <InputGroupText>
+                                  <i className="icon-user" />
+                                </InputGroupText>
+                              </InputGroupAddon>
+                              <Input
+                                type="text"
+                                placeholder="ชื่อผู้ใช้งาน"
+                                autoComplete="username"
+                                onChange={this.onInputChangeHandler}
+                                name="username"
+                                value={this.state.input.username}
+                                invalid={false}
+                                autoFocus
+                              />
+                              {this.state.hasError.username ? (
+                                <FormFeedback>
+                                  {this.state.hasError.username}
+                                </FormFeedback>
+                              ) : null}
+                            </InputGroup>
+                            <InputGroup className="mb-4">
+                              <InputGroupAddon addonType="prepend">
+                                <InputGroupText>
+                                  <i className="icon-lock" />
+                                </InputGroupText>
+                              </InputGroupAddon>
+                              <Input
+                                type="password"
+                                placeholder="รหัสผ่าน"
+                                name="password"
+                                onChange={this.onInputChangeHandler}
+                                autoComplete="current-password"
+                                value={this.state.input.password}
+                                invalid={this.state.hasError.password}
+                              />
+                              {this.state.hasError.password ? (
+                                <FormFeedback>
+                                  {this.state.hasError.password}
+                                </FormFeedback>
+                              ) : null}
+                            </InputGroup>
+                            <Row>
+                              <Col xs="6">
+                                <Button color="primary" className="px-4">
+                                  เข้าสู่ระบบ
+                                </Button>
+                              </Col>
+                              <Col xs="6" className="text-right">
+                                <Button color="link" className="px-0">
+                                  ลืมรหัสผ่าน ?
+                                </Button>
+                              </Col>
+                            </Row>
+                          </Form>
+                        </CardBody>
+                      );
+                    }}
+                  </Mutation>
                 </Card>
                 <Card
                   className="text-white bg-primary py-5 d-md-down-none"

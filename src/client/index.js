@@ -9,9 +9,24 @@ import { onError } from "apollo-link-error";
 import defaults from "./state/defaults";
 import resolvers from "./state/resolvers";
 import typeDefs from "./state/typeDefs";
+import { setContext } from "apollo-link-context";
 
 const link = new HttpLink({
   uri: config.graphql.clientUrl
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem("token");
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      Authorization:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InNlcnZpY2UiOiJkZWZhdWx0QGRlZmF1bHQiLCJyb2xlcyI6WyJhZG1pbiJdfSwiaWF0IjoxNTM4MTAzNzQyLCJleHAiOjE1Mzg3MDg1NDJ9.h6UJUtGYvZQglub75Cmrbl9PUOIuRJb6v94vFjW__-E"
+    }
+  };
+  // authorization: token ? `Bearer ${token}` : ""
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -34,7 +49,7 @@ const linkState = new withClientState({
   defaults
 });
 const client = new ApolloClient({
-  link: from([linkState, errorLink, link]),
+  link: from([linkState, errorLink, authLink.concat(link)]),
   cache
 });
 

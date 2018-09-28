@@ -37,19 +37,30 @@ export const UPDATE_USER = gql`
     $email: String!
   ) {
     updateUser(
-      data: { Role: $Role, name: $name, username: $username, email: $email }
+      data: { role: $role, name: $name, username: $username, email: $email }
       where: { id: $id }
     ) {
       id
       name
-      userType {
-        id
-        name
-      }
+      role
       email
       username
       createdAt
       updatedAt
+    }
+  }
+`;
+
+export const GET_USER_BY_USERNAME_AND_PASSWORD = gql`
+  query getUserByUsernameAndPassword($username: String, $password: String) {
+    users(where: { username: $username, password: $password }) {
+      id
+      name
+      role
+      username
+      email
+      createdAt
+      updatedAts
     }
   }
 `;
