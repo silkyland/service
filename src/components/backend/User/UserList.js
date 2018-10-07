@@ -35,33 +35,23 @@ const UserList = props => (
                 <td>{u.email}</td>
                 <td>{moment(u.updatedAt).format("ll")}</td>
                 <td>
-                  <ApolloConsumer>
-                    {client => {
-                      return (
-                        <Button
-                          color="warning"
-                          size="sm"
-                          onClick={async () => {
-                            const { data } = await client.query({
-                              query: GET_USER,
-                              variables: { id: u.id }
-                            });
-                            props.onEditButtonClicked({
-                              id: data.user.id,
-                              role: data.user.role,
-                              name: data.user.name,
-                              username: data.user.username,
-                              email: data.user.email,
-                              createdAt: data.user.createdAt,
-                              updatedAt: data.user.updatedAt
-                            });
-                          }}
-                        >
-                          <i className="fa fa-edit" /> แก้ไข
-                        </Button>
-                      );
+                  <Button
+                    color="warning"
+                    size="sm"
+                    onClick={() => {
+                      props.onEditButtonClicked({
+                        id: u.id,
+                        role: u.role,
+                        name: u.name,
+                        username: u.username,
+                        email: u.email,
+                        createdAt: u.createdAt,
+                        updatedAt: u.updatedAt
+                      });
                     }}
-                  </ApolloConsumer>{" "}
+                  >
+                    <i className="fa fa-edit" /> แก้ไข
+                  </Button>{" "}
                   <Mutation
                     mutation={DELETE_USER}
                     update={(cache, { data: { deleteUser } }) => {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, Button, Card, CardHeader } from "reactstrap";
+import { Button, Card, CardHeader } from "reactstrap";
 import UserForm from "./UserForm";
 import UserList from "./UserList";
 
@@ -10,7 +10,7 @@ class User extends Component {
       isOpen: false,
       isUpdate: false,
       isError: false,
-      errorMessage: "",
+      validateErrors: {},
       input: {
         id: "",
         username: "",
@@ -28,14 +28,18 @@ class User extends Component {
     this.toggleErrorMessage = this.toggleErrorMessage.bind(this);
   }
 
-  toggleErrorMessage(state, message) {
-    this.setState({ isError: state, errorMessage: message });
+  componentDidMount() {
+    document.title = "จัดการผู้ใข้งาน";
+  }
+
+  toggleErrorMessage(errors) {
+    this.setState({ validateErrors: errors });
   }
 
   clearInput() {
     this.setState({
       isError: false,
-      errorMessage: "",
+      validateErrors: {},
       input: {
         id: "",
         username: "",

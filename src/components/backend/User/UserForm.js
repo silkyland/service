@@ -49,7 +49,19 @@ const updateCacheFromUserUpdate = (cache, { data: { updateUser } }) => {
 
 const UserForm = props => {
   return (
-    <Mutation mutation={CREATE_USER} update={updateCache}>
+    <Mutation
+      mutation={CREATE_USER}
+      update={updateCache}
+      onError={
+        error =>
+          error.graphQLErrors[0].extensions.code == "VALIDATION_ERROR"
+            ? props.toggleErrorMessage(
+                error.graphQLErrors[0].extensions.exception
+              )
+            : undefined
+        //console.log(JSON.stringify(error))
+      }
+    >
       {(createUser, { data, loading, error }) => {
         if (loading)
           return (
@@ -76,7 +88,19 @@ const UserForm = props => {
             ) : (
               ""
             )}
-            <Mutation mutation={UPDATE_USER} update={updateCacheFromUserUpdate}>
+            <Mutation
+              mutation={UPDATE_USER}
+              update={updateCacheFromUserUpdate}
+              onError={
+                error =>
+                  error.graphQLErrors[0].extensions.code == "VALIDATION_ERROR"
+                    ? props.toggleErrorMessage(
+                        error.graphQLErrors[0].extensions.exception
+                      )
+                    : undefined
+                //console.log(JSON.stringify(error))
+              }
+            >
               {(updateUser, { loading, error, data, client }) => {
                 if (data) {
                   swal(
@@ -118,30 +142,6 @@ const UserForm = props => {
                     <Form
                       onSubmit={e => {
                         e.preventDefault();
-                        let rules = {
-                          name: "required|min:3",
-                          role: "required|in:ADMIN,USER",
-                          username: "required|min:3",
-                          email: "email|min:3|required",
-                          password: "required|min:3",
-                          confirmPassword: "required|same:password"
-                        };
-                        if (props.isUpdate) rules["id"] = "required";
-
-                        let validation = new Validator(props.input, rules);
-                        if (validation.fails()) {
-                          props.toggleErrorMessage(
-                            true,
-                            validation.errors.all()
-                          );
-                          return false;
-                        } else {
-                          props.toggleErrorMessage(
-                            false,
-                            validation.errors.all()
-                          );
-                        }
-
                         !props.isUpdate
                           ? createUser({
                               variables: {
@@ -168,7 +168,7 @@ const UserForm = props => {
                         <Label>ประเภทผู้ใช้งาน :</Label>
 
                         <Input
-                          invalid={props.errorMessage.role}
+                          invalid={props.validateErrors.role}
                           type="select"
                           onChange={props.onInputChangeHandler}
                           name="role"
@@ -177,8 +177,10 @@ const UserForm = props => {
                           <option value="ADMIN">ADMIN</option>
                           <option value="USER">USER</option>
                         </Input>
-                        {props.errorMessage.role ? (
-                          <FormFeedback>{props.errorMessage.role}</FormFeedback>
+                        {props.validateErrors.role ? (
+                          <FormFeedback>
+                            {props.validateErrors.role}
+                          </FormFeedback>
                         ) : null}
                       </FormGroup>
                       <FormGroup>
@@ -190,11 +192,11 @@ const UserForm = props => {
                           placeholder="กรอกชื่อผู้ใช้"
                           autoFocus={props.autoFocus}
                           value={props.input.username}
-                          invalid={props.errorMessage.username}
+                          invalid={props.validateErrors.username}
                         />
-                        {props.errorMessage.username ? (
+                        {props.validateErrors.username ? (
                           <FormFeedback>
-                            {props.errorMessage.username}
+                            {props.validateErrors.username}
                           </FormFeedback>
                         ) : null}
                       </FormGroup>
@@ -206,10 +208,12 @@ const UserForm = props => {
                           onChange={props.onInputChangeHandler}
                           placeholder="กรอกชื่อ-สกุล"
                           value={props.input.name}
-                          invalid={props.errorMessage.name}
+                          invalid={props.validateErrors.name}
                         />
-                        {props.errorMessage.name ? (
-                          <FormFeedback>{props.errorMessage.name}</FormFeedback>
+                        {props.validateErrors.name ? (
+                          <FormFeedback>
+                            {props.validateErrors.name}
+                          </FormFeedback>
                         ) : null}
                       </FormGroup>
                       <FormGroup>
@@ -220,11 +224,11 @@ const UserForm = props => {
                           onChange={props.onInputChangeHandler}
                           placeholder="กรอกอีเมล์"
                           value={props.input.email}
-                          invalid={props.errorMessage.email}
+                          invalid={props.validateErrors.email}
                         />
-                        {props.errorMessage.email ? (
+                        {props.validateErrors.email ? (
                           <FormFeedback>
-                            {props.errorMessage.email}
+                            {props.validateErrors.email}
                           </FormFeedback>
                         ) : null}
                       </FormGroup>
@@ -238,11 +242,11 @@ const UserForm = props => {
                               onChange={props.onInputChangeHandler}
                               placeholder="กรอกรหัสผ่าน"
                               value={props.input.password}
-                              invalid={props.errorMessage.password}
+                              invalid={props.validateErrors.password}
                             />
-                            {props.errorMessage.password ? (
+                            {props.validateErrors.password ? (
                               <FormFeedback>
-                                {props.errorMessage.password}
+                                {props.validateErrors.password}
                               </FormFeedback>
                             ) : null}
                           </FormGroup>
@@ -254,11 +258,11 @@ const UserForm = props => {
                               onChange={props.onInputChangeHandler}
                               placeholder="กรอกรหัสผ่านอีกครั้ง"
                               value={props.input.confirmPassword}
-                              invalid={props.errorMessage.confirmPassword}
+                              invalid={props.validateErrors.confirmPassword}
                             />
-                            {props.errorMessage.confirmPassword ? (
+                            {props.validateErrors.confirmPassword ? (
                               <FormFeedback>
-                                {props.errorMessage.confirmPassword}
+                                {props.validateErrors.confirmPassword}
                               </FormFeedback>
                             ) : null}
                           </FormGroup>

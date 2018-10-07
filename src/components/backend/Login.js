@@ -38,9 +38,14 @@ class Login extends Component {
     router: PropTypes.object
   };
 
-  componentDidMount = () => {
+  async componentDidMount() {
     document.title = "เข้าสู่ระบบ";
-  };
+    const auth = await JSON.parse(localStorage.getItem("auth"));
+    console.log(auth);
+    if (auth) {
+      this.context.router.history.push("/admin/dashboard");
+    }
+  }
 
   setErrorMessage(message) {
     this.setState({ hasError: message });
@@ -51,7 +56,7 @@ class Login extends Component {
     oldState[e.target.name] = e.target.value;
     this.setState({ input: oldState });
   }
-  componentDidMount() {}
+
   render() {
     return (
       <div className="app flex-row align-items-center">

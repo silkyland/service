@@ -42,29 +42,23 @@ class Backend extends Component {
           </AppSidebar>
           <main className="main">
             <AppBreadcrumb appRoutes={routes} />
-            <Query query={GET_AUTH}>
-              {({ auth }, error, loading) => {
-                return (
-                  <Container fluid>
-                    <Switch>
-                      {!auth ? <Redirect to="/login" /> : undefined}
-                      {routes.map((route, idx) => {
-                        return route.component ? (
-                          <Route
-                            key={idx}
-                            path={route.path}
-                            exact={route.exact}
-                            name={route.name}
-                            render={props => <route.component {...props} />}
-                          />
-                        ) : null;
-                      })}
-                      <Redirect from="/" to="/admin/dashboard" />
-                    </Switch>
-                  </Container>
-                );
-              }}
-            </Query>
+
+            <Container fluid>
+              <Switch>
+                {routes.map((route, idx) => {
+                  return route.component ? (
+                    <Route
+                      key={idx}
+                      path={route.path}
+                      exact={route.exact}
+                      name={route.name}
+                      render={props => <route.component {...props} />}
+                    />
+                  ) : null;
+                })}
+                <Redirect from="/" to="/admin/dashboard" />
+              </Switch>
+            </Container>
           </main>
           <AppAside fixed hidden>
             <DefaultAside />

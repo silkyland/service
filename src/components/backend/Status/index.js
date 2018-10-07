@@ -1,17 +1,5 @@
 import React, { Component } from "react";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-  Table,
-  Button,
-  Alert
-} from "reactstrap";
-import swal from "sweetalert2";
+import { Button, Card, CardHeader } from "reactstrap";
 
 class Status extends Component {
   constructor(props) {

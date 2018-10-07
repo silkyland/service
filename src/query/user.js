@@ -37,8 +37,11 @@ export const UPDATE_USER = gql`
     $email: String!
   ) {
     updateUser(
-      data: { role: $role, name: $name, username: $username, email: $email }
-      where: { id: $id }
+      id: $id
+      role: $role
+      name: $name
+      username: $username
+      email: $email
     ) {
       id
       name
@@ -80,15 +83,15 @@ export const CREATE_USER = gql`
     $username: String!
     $email: String!
     $password: String!
+    $confirmPassword: String!
   ) {
     createUser(
-      data: {
-        name: $name
-        role: $role
-        username: $username
-        email: $email
-        password: $password
-      }
+      name: $name
+      role: $role
+      username: $username
+      email: $email
+      password: $password
+      confirmPassword: $confirmPassword
     ) {
       id
       role
