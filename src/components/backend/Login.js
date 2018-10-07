@@ -52,24 +52,22 @@ class Login extends Component {
             <Col md="8">
               <CardGroup>
                 <Card className="p-4">
-                  <Mutation mutation={LOGIN}>
+                  <Mutation
+                    mutation={LOGIN}
+                    onError={error =>
+                      // error.graphQLErrors[0].message
+                      //   ? this.setErrorMessage(
+                      //       JSON.parse(error.graphQLErrors[0].message)
+                      //     )
+                      //   : undefined
+                      console.log(error)
+                    }
+                  >
                     {(login, { error, loading, cache }) => {
                       if (loading) return <Dots />;
 
                       return (
                         <CardBody>
-                          {error ? (
-                            <Alert color="danger">
-                              <h4>ผิดพลาด !</h4>
-                              <p>
-                                {error.graphQLErrors.map(({ message }) =>
-                                  message
-                                    .split(",")
-                                    .map((m, i) => <li key={i}>{m}</li>)
-                                )}
-                              </p>
-                            </Alert>
-                          ) : null}
                           <Form
                             onSubmit={e => {
                               e.preventDefault();
@@ -93,7 +91,7 @@ class Login extends Component {
                                 onChange={this.onInputChangeHandler}
                                 name="username"
                                 value={this.state.input.username}
-                                invalid={false}
+                                invalid={this.state.hasError.username}
                                 autoFocus
                               />
                               {this.state.hasError.username ? (
