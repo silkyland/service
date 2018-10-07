@@ -3,11 +3,13 @@ import gql from "graphql-tag";
 export const GET_AUTH = gql`
   query auth @client {
     token
-    id
-    name
-    role
-    username
-    email
+    user {
+      id
+      role
+      name
+      username
+      email
+    }
   }
 `;
 
@@ -21,6 +23,8 @@ export const LOGIN = gql`
         username
         role
         email
+        createdAt
+        updatedAt
       }
     }
   }

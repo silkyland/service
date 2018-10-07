@@ -1,10 +1,16 @@
 const defaults = {
-  alert: {
-    status: false,
-    color: "success",
-    message: "",
-    title: "",
-    __typename: "Alert"
+  auth: {
+    token: "",
+    user: {
+      id: "",
+      name: "",
+      username: "",
+      email: "",
+      createdAt: "",
+      updatedAt: "",
+      __typename: "User"
+    },
+    __typename: "Auth"
   }
 };
 export default defaults;

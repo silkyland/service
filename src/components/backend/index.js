@@ -46,7 +46,6 @@ class Backend extends Component {
               {({ auth }, error, loading) => {
                 return (
                   <Container fluid>
-                    <AlertLayout />
                     <Switch>
                       {!auth ? <Redirect to="/login" /> : undefined}
                       {routes.map((route, idx) => {

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
+import { Dots } from "react-activity";
+import { Mutation } from "react-apollo";
+import PropTypes from "prop-types";
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -7,19 +11,16 @@ import {
   Col,
   Container,
   Form,
+  FormFeedback,
   Input,
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  Row,
-  Alert,
-  FormFeedback
+  Row
 } from "reactstrap";
-import { Dots } from "react-activity";
-import { Mutation } from "react-apollo";
-import { LOGIN } from "../../query/auth";
-import Validator from "validatorjs";
-import { ApolloError } from "apollo-boost";
+import swal from "sweetalert2";
+import { LOGIN, GET_AUTH } from "../../query/auth";
+import update from "immutability-helper";
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +34,13 @@ class Login extends Component {
     this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
     this.setErrorMessage = this.setErrorMessage.bind(this);
   }
+  static contextTypes = {
+    router: PropTypes.object
+  };
+
+  componentDidMount = () => {
+    document.title = "เข้าสู่ระบบ";
+  };
 
   setErrorMessage(message) {
     this.setState({ hasError: message });
@@ -54,13 +62,31 @@ class Login extends Component {
                 <Card className="p-4">
                   <Mutation
                     mutation={LOGIN}
-                    onError={error =>
-                      // error.graphQLErrors[0].message
-                      //   ? this.setErrorMessage(
-                      //       JSON.parse(error.graphQLErrors[0].message)
-                      //     )
-                      //   : undefined
-                      console.log(error)
+                    update={async (cache, { data: { login } }) => {
+                      const data = { auth: login, __typename: "Auth" };
+                      try {
+                        localStorage.setItem("auth", JSON.stringify(login));
+                        cache.writeData({ data });
+                        swal({
+                          type: "success",
+                          title: "สำเร็จ !",
+                          text: "เข้าสู่ระบบเรียบร้อย กำลังพาท่านไปยังหน้าหลัก",
+                          timer: 1500
+                        });
+                        this.context.router.history.push("/admin/dashboard");
+                      } catch (error) {
+                        swal("ผิดพลาด!", error.message, "warning");
+                      }
+                    }}
+                    onError={
+                      error =>
+                        error.graphQLErrors[0].extensions.code ==
+                        "VALIDATION_ERROR"
+                          ? this.setErrorMessage(
+                              error.graphQLErrors[0].extensions.exception
+                            )
+                          : undefined
+                      //console.log(JSON.stringify(error))
                     }
                   >
                     {(login, { error, loading, cache }) => {
@@ -68,6 +94,13 @@ class Login extends Component {
 
                       return (
                         <CardBody>
+                          {error ? (
+                            <Alert color="danger">
+                              <p>{error.message}</p>
+                            </Alert>
+                          ) : (
+                            undefined
+                          )}
                           <Form
                             onSubmit={e => {
                               e.preventDefault();

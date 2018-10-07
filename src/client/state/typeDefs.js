@@ -1,56 +1,13 @@
-const typeDefs = `
-    enum Role {
-        ADMIN
-        USER
-    }
+const typeDefs = [
+  `
+  type Auth {
+    token: String!
+    user: User!
+  }
 
-    type Auth {
-        token: String!
-        id: ID!
-        name: String
-        role: Role
-        username: String
-        email: String
-    }
-    
-    type Query {
-        alert : Alert
-        auth: Auth
-    }
-
-    type Mutation {
-        login(username: String!, password: String!){
-            token
-            id,
-            name,
-            role
-            username
-            email
-        }
-        setAuth(
-            id: ID!
-            name: String!
-            role: Role!
-            username: String!
-            email: String!
-        ){
-            id
-            name
-            role
-            username
-            email
-        }
-        setAlert( 
-            color: String
-            status : Boolean
-            message: String
-            title: String
-        ){
-            color
-            status
-            message
-            title
-        }
-    }
-`;
+  type Query {
+    auth: Auth
+  }
+`
+];
 export default typeDefs;
