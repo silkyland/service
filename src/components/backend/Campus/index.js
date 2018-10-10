@@ -9,7 +9,8 @@ import {
   Input,
   Button,
   Label,
-  Alert
+  Alert,
+  FormFeedback
 } from "reactstrap";
 import { Query, Mutation } from "react-apollo";
 import { Dots } from "react-activity";
@@ -59,7 +60,8 @@ class Campus extends Component {
       input: {
         id: "",
         name: ""
-      }
+      },
+      hasError: {}
     });
   }
 
@@ -92,6 +94,15 @@ class Campus extends Component {
           <CardBody>
             <Mutation
               mutation={CREATE_CAMPUS}
+              onError={error => {
+                if (
+                  error.graphQLErrors[0].extensions.code == "VALIDATION_ERROR"
+                ) {
+                  this.setState({
+                    hasError: error.graphQLErrors[0].extensions.exception
+                  });
+                }
+              }}
               update={(cache, { data: { createCampus } }) => {
                 let data = cache.readQuery({ query: GET_CAMPUSES });
                 cache.writeQuery({
@@ -104,64 +115,82 @@ class Campus extends Component {
             >
               {(createCampus, { error, loading }) => {
                 if (loading) return <Dots />;
-                return (
-                  <Mutation
-                    mutation={UPDATE_CAMPUS}
-                    update={(cache, { data: { updateCampus } }) => {
-                      let data = cache.readQuery({
-                        query: GET_CAMPUSES
-                      });
 
-                      let index = data.campuses.findIndex(
-                        cp => cp.id === updateCampus.id
-                      );
-                      cache.writeQuery({
-                        query: GET_CAMPUSES,
-                        data: update(data, {
-                          campuses: { [index]: { $set: updateCampus } }
-                        })
-                      });
-                      swal("สำเร็จ", "บันทึกข้อมูลสำเร็จแล้ว !", "success");
-                      this.toggleMainButton();
-                    }}
-                  >
-                    {(updateCampus, { error, loading }) => {
-                      if (loading) return <Dots />;
-                      return (
-                        <React.Fragment>
-                          {error ? (
-                            <Alert color="danger">
-                              <h4>มีข้อผิดพลาด !</h4>
-                              <p>{error.message}</p>
-                            </Alert>
-                          ) : null}
-                          <Form
-                            onSubmit={e => {
-                              e.preventDefault();
-                              this.state.isUpdate
-                                ? updateCampus({ variables: this.state.input })
-                                : createCampus({ variables: this.state.input });
-                            }}
-                          >
-                            <FormGroup>
-                              <Label>ชื่อพื้นที่จัดการศึกษา</Label>
-                              <Input
-                                name="name"
-                                placeholder="กรอกพื้นที่จัดการศึกษา"
-                                value={this.state.input.name}
-                                onChange={this.onInputChangeHandler}
-                                autoFocus
-                                required
-                              />
-                            </FormGroup>
-                            <Button color="primary">
-                              <i className="fa fa-save" /> บันทึก
-                            </Button>
-                          </Form>
-                        </React.Fragment>
-                      );
-                    }}
-                  </Mutation>
+                return (
+                  <React.Fragment>
+                    {error ? (
+                      <Alert color="danger">{error.message}</Alert>
+                    ) : (
+                      undefined
+                    )}
+                    <Mutation
+                      mutation={UPDATE_CAMPUS}
+                      update={(cache, { data: { updateCampus } }) => {
+                        let data = cache.readQuery({
+                          query: GET_CAMPUSES
+                        });
+
+                        let index = data.campuses.findIndex(
+                          cp => cp.id === updateCampus.id
+                        );
+                        cache.writeQuery({
+                          query: GET_CAMPUSES,
+                          data: update(data, {
+                            campuses: { [index]: { $set: updateCampus } }
+                          })
+                        });
+                        swal("สำเร็จ", "บันทึกข้อมูลสำเร็จแล้ว !", "success");
+                        this.toggleMainButton();
+                      }}
+                    >
+                      {(updateCampus, { error, loading }) => {
+                        if (loading) return <Dots />;
+                        return (
+                          <React.Fragment>
+                            {error ? (
+                              <Alert color="danger">
+                                <h4>มีข้อผิดพลาด !</h4>
+                                <p>{error.message}</p>
+                              </Alert>
+                            ) : null}
+                            <Form
+                              onSubmit={e => {
+                                e.preventDefault();
+                                this.state.isUpdate
+                                  ? updateCampus({
+                                      variables: this.state.input
+                                    })
+                                  : createCampus({
+                                      variables: this.state.input
+                                    });
+                              }}
+                            >
+                              <FormGroup>
+                                <Label>ชื่อพื้นที่จัดการศึกษา</Label>
+                                <Input
+                                  name="name"
+                                  placeholder="กรอกพื้นที่จัดการศึกษา"
+                                  value={this.state.input.name}
+                                  onChange={this.onInputChangeHandler}
+                                  autoFocus
+                                  required
+                                  invalid={this.state.hasError.name}
+                                />
+                                {this.state.hasError.name ? (
+                                  <FormFeedback>
+                                    {this.state.hasError.name}
+                                  </FormFeedback>
+                                ) : null}
+                              </FormGroup>
+                              <Button color="primary">
+                                <i className="fa fa-save" /> บันทึก
+                              </Button>
+                            </Form>
+                          </React.Fragment>
+                        );
+                      }}
+                    </Mutation>
+                  </React.Fragment>
                 );
               }}
             </Mutation>
