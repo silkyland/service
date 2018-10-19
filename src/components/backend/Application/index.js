@@ -9,9 +9,11 @@ import {
   Label,
   Table,
   Button,
-  Alert
+  Alert,
+  FormFeedback
 } from "reactstrap";
 import swal from "sweetalert2";
+import { _ } from "lodash";
 
 class Application extends Component {
   constructor(props) {
@@ -27,11 +29,25 @@ class Application extends Component {
       },
       input: {
         id: "",
-        name: ""
-      }
+        name: "",
+        version: "",
+        comment: ""
+      },
+      hasError: {}
     };
     this.toggleMainButton = this.toggleMainButton.bind(this);
     this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
+  }
+
+  onErrorValidation(error) {
+    if (
+      _.get(error, "graphQLErrors[0].extensions.code", "") ===
+      "VALIDATION_ERROR"
+    ) {
+      this.setState({
+        hasError: error.graphQLErrors[0].extensions.exception
+      });
+    }
   }
 
   componentDidMount() {
@@ -53,7 +69,9 @@ class Application extends Component {
       isUpdate: false,
       input: {
         id: "",
-        name: ""
+        name: "",
+        version: "",
+        comment: ""
       }
     });
   }
@@ -78,6 +96,50 @@ class Application extends Component {
             {this.state.mainButton.text}
           </Button>
         </CardHeader>
+        <CardBody>
+          <h4>โปรดกรอกรายละเอียดให้ครบถ้วน</h4>
+          <Form>
+            <FormGroup>
+              <Label>ชื่อ : </Label>
+              <Input
+                type="text"
+                autoFocus={true}
+                name="name"
+                placeholder="ชื่อโปรแกรม"
+                required
+                value={this.state.input.name}
+                onChange={this.onInputChangeHandler}
+                invalid={this.state.hasError.name}
+              />
+              {this.state.hasError.name ? (
+                <FormFeedback>{this.state.hasError.name}</FormFeedback>
+              ) : (
+                undefined
+              )}
+            </FormGroup>
+            <FormGroup>
+              <Label>เวอร์ชั่น : </Label>
+              <Input
+                type="text"
+                autoFocus={true}
+                name="name"
+                placeholder="เวอร์ชั่นของโปรแกรม"
+                required
+                value={this.state.input.name}
+                onChange={this.onInputChangeHandler}
+                invalid={this.state.hasError.name}
+              />
+              {this.state.hasError.name ? (
+                <FormFeedback>{this.state.hasError.name}</FormFeedback>
+              ) : (
+                undefined
+              )}
+            </FormGroup>
+            <Button type="submit" color="primary">
+              <i className="fa fa-save" /> บันทึก
+            </Button>
+          </Form>
+        </CardBody>
       </Card>
     );
   }
