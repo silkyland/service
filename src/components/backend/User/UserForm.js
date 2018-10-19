@@ -20,6 +20,7 @@ import {
 import update from "immutability-helper";
 import Validator from "validatorjs";
 import swal from "sweetalert2";
+import Loading from "../../layout/share/Loading";
 
 const updateCache = (cache, { data: { createUser } }) => {
   let { users } = cache.readQuery({ query: GET_USERS });
@@ -63,12 +64,7 @@ const UserForm = props => {
       }
     >
       {(createUser, { data, loading, error }) => {
-        if (loading)
-          return (
-            <CardBody>
-              <Dots />
-            </CardBody>
-          );
+        if (loading) return <Loading />;
         if (data) {
           swal("เรียบร้อย !", "ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว.", "success");
           props.toggleForm();
@@ -111,7 +107,7 @@ const UserForm = props => {
                   props.toggleForm();
                   props.clearInput();
                 }
-                if (loading) return <Dots />;
+                if (loading) return <Loading />;
                 if (error)
                   return (
                     <Alert color="danger">

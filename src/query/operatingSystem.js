@@ -32,10 +32,10 @@ export const GET_OPERATING_SYSTEMS = gql`
 
 export const CREATE_OPERATING_SYSTEM = gql`
   mutation createOperatingSystem(
-    $name: String
+    $name: String!
     $version: String
     $build: String
-    $year: String
+    $year: Int!
     $comment: String
   ) {
     createOperatingSystem(
@@ -60,10 +60,10 @@ export const CREATE_OPERATING_SYSTEM = gql`
 export const UPDATE_OPERATING_SYSTEM = gql`
   mutation updateOperatingSystem(
     $id: ID!
-    $name: String
+    $name: String!
     $version: String
     $build: String
-    $year: String
+    $year: Int!
     $comment: String
   ) {
     updateOperatingSystem(

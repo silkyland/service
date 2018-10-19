@@ -1,7 +1,6 @@
-import React, { Component } from "react";
-import { Dots } from "react-activity";
-import { Mutation } from "react-apollo";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Mutation } from "react-apollo";
 import {
   Alert,
   Button,
@@ -19,8 +18,8 @@ import {
   Row
 } from "reactstrap";
 import swal from "sweetalert2";
-import { LOGIN, GET_AUTH } from "../../query/auth";
-import update from "immutability-helper";
+import { LOGIN } from "../../query/auth";
+import Loading from "../layout/share/Loading";
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -95,7 +94,7 @@ class Login extends Component {
                     }
                   >
                     {(login, { error, loading, cache }) => {
-                      if (loading) return <Dots />;
+                      if (loading) return <Loading />;
 
                       return (
                         <CardBody>

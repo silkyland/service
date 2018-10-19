@@ -23,6 +23,7 @@ import {
 } from "../../../query/campus";
 import swal from "sweetalert2";
 import update from "immutability-helper";
+import Loading from "../../layout/share/Loading";
 class Campus extends Component {
   constructor(props) {
     super(props);
@@ -114,7 +115,7 @@ class Campus extends Component {
               }}
             >
               {(createCampus, { error, loading }) => {
-                if (loading) return <Dots />;
+                if (loading) return <Loading />;
 
                 return (
                   <React.Fragment>
@@ -144,7 +145,7 @@ class Campus extends Component {
                       }}
                     >
                       {(updateCampus, { error, loading }) => {
-                        if (loading) return <Dots />;
+                        if (loading) return <Loading />;
                         return (
                           <React.Fragment>
                             {error ? (
@@ -206,7 +207,7 @@ class Campus extends Component {
                     </Alert>
                   </CardBody>
                 );
-              if (loading) return <Dots />;
+              if (loading) return <Loading />;
               return (
                 <Table>
                   <thead>

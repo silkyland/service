@@ -6,11 +6,12 @@ import { ApolloConsumer, Mutation, Query, withApollo } from "react-apollo";
 import { Button, Table } from "reactstrap";
 import swal from "sweetalert2";
 import { DELETE_USER, GET_USER, GET_USERS } from "../../../query/user";
+import Loading from "../../layout/share/Loading";
 
 const UserList = props => (
   <Query query={GET_USERS}>
     {({ loading, error, data }) => {
-      if (loading) return <Dots />;
+      if (loading) return <Loading />;
       if (error) return `Error! ${error.message}`;
       return (
         <Table>

@@ -9,7 +9,8 @@ import {
   Label,
   Input,
   Table,
-  Alert
+  Alert,
+  FormFeedback
 } from "reactstrap";
 import { Dots } from "react-activity";
 import swal from "sweetalert2";
@@ -22,6 +23,8 @@ import {
   GET_OPERATING_SYSTEM
 } from "../../../query/operatingSystem";
 import update from "immutability-helper";
+import _ from "lodash";
+import Loading from "../../layout/share/Loading";
 
 class OperatingSystem extends Component {
   constructor(props) {
@@ -40,10 +43,12 @@ class OperatingSystem extends Component {
       button: {
         color: "primary",
         size: "sm"
-      }
+      },
+      hasError: {}
     };
     this.toggleForm = this.toggleForm.bind(this);
     this.onInputChangeHander = this.onInputChangeHander.bind(this);
+    this.onValidationError = this.onValidationError.bind(this);
   }
   componentDidMount() {
     document.title = "จัดการทั่วไป » ระบบปฏิบัติการ";
@@ -70,6 +75,16 @@ class OperatingSystem extends Component {
     let oldInput = this.state.input;
     oldInput[e.target.name] = e.target.value;
     this.setState({ input: oldInput });
+  }
+
+  onValidationError(error) {
+    if (
+      _.get(error, "graphQLErrors.0.extensions.code", "") == "VALIDATION_ERROR"
+    ) {
+      this.setState({
+        hasError: error.graphQLErrors[0].extensions.exception
+      });
+    }
   }
 
   render() {
@@ -117,9 +132,10 @@ class OperatingSystem extends Component {
                   );
                   this.toggleForm();
                 }}
+                onError={this.onValidationError}
               >
                 {(createOperatingSystem, { error, loading }) => {
-                  if (loading) return <Dots />;
+                  if (loading) return <Loading />;
                   return (
                     <React.Fragment>
                       {error ? (
@@ -130,6 +146,7 @@ class OperatingSystem extends Component {
                       ) : null}
                       <Mutation
                         mutation={UPDATE_OPERATING_SYSTEM}
+                        onError={this.onValidationError}
                         update={(cache, { data: updateOperatingSystem }) => {
                           let data = cache.readQuery({
                             query: GET_OPERATING_SYSTEMS
@@ -156,7 +173,7 @@ class OperatingSystem extends Component {
                         }}
                       >
                         {(updateOperatingSystem, { error, loading }) => {
-                          if (loading) return <Dots />;
+                          if (loading) return <Loading />;
                           return (
                             <React.Fragment>
                               {error ? (
@@ -168,12 +185,18 @@ class OperatingSystem extends Component {
                               <Form
                                 onSubmit={e => {
                                   e.preventDefault();
+                                  let input = this.state.input;
+                                  let state = update(input, {
+                                    year: {
+                                      $set: parseInt(this.state.input.year)
+                                    }
+                                  });
                                   this.state.isEdit
                                     ? updateOperatingSystem({
-                                        variables: this.state.input
+                                        variables: state
                                       })
                                     : createOperatingSystem({
-                                        variables: this.state.input
+                                        variables: state
                                       });
                                 }}
                               >
@@ -190,7 +213,13 @@ class OperatingSystem extends Component {
                                     placeholder="กรอกระบบปฏิบัติการ"
                                     onChange={this.onInputChangeHander}
                                     value={this.state.input.name}
+                                    invalid={this.state.hasError.name}
                                   />
+                                  {this.state.hasError.name ? (
+                                    <FormFeedback>
+                                      {this.state.hasError.name}
+                                    </FormFeedback>
+                                  ) : null}
                                 </FormGroup>
                                 <FormGroup>
                                   <Label>เวอร์ชั่น: </Label>
@@ -200,7 +229,13 @@ class OperatingSystem extends Component {
                                     placeholder="กรอกเวอร์ชั่น"
                                     onChange={this.onInputChangeHander}
                                     value={this.state.input.version}
+                                    invalid={this.state.hasError.version}
                                   />
+                                  {this.state.hasError.version ? (
+                                    <FormFeedback>
+                                      {this.state.hasError.version}
+                                    </FormFeedback>
+                                  ) : null}
                                 </FormGroup>
                                 <FormGroup>
                                   <Label>หมายเลขบิวด์ :</Label>
@@ -210,18 +245,32 @@ class OperatingSystem extends Component {
                                     placeholder="กรอกหมายเลขบิวต์"
                                     onChange={this.onInputChangeHander}
                                     value={this.state.input.build}
+                                    invalid={this.state.hasError.build}
                                   />
+                                  {this.state.hasError.build ? (
+                                    <FormFeedback>
+                                      {this.state.hasError.build}
+                                    </FormFeedback>
+                                  ) : null}
                                 </FormGroup>
                                 <FormGroup>
                                   <Label>ปี :</Label>
                                   <Input
+                                    pattern="[0-9]*"
                                     type="number"
                                     name="year"
                                     maxLength={4}
                                     placeholder="กรอกหมายเลขบิวต์"
                                     onChange={this.onInputChangeHander}
                                     value={this.state.input.year}
+                                    invalid={this.state.hasError.year}
+                                    required
                                   />
+                                  {this.state.hasError.year ? (
+                                    <FormFeedback>
+                                      {this.state.hasError.year}
+                                    </FormFeedback>
+                                  ) : null}
                                 </FormGroup>
                                 <FormGroup>
                                   <Label>หมายเหตุ :</Label>
@@ -231,7 +280,13 @@ class OperatingSystem extends Component {
                                     placeholder="กรอกหมายเหตุ"
                                     onChange={this.onInputChangeHander}
                                     value={this.state.input.comment}
+                                    invalid={this.state.hasError.comment}
                                   />
+                                  {this.state.hasError.comment ? (
+                                    <FormFeedback>
+                                      {this.state.hasError.comment}
+                                    </FormFeedback>
+                                  ) : null}
                                 </FormGroup>
                                 <p className="text-danger">
                                   * หมายถึง จำเป็นต้องกรอกข้อมูล
@@ -252,7 +307,7 @@ class OperatingSystem extends Component {
           ) : null}
           <Query query={GET_OPERATING_SYSTEMS}>
             {({ loading, error, data }) => {
-              if (loading) return <Dots />;
+              if (loading) return <Loading />;
               if (error)
                 return (
                   <CardBody>
