@@ -15,7 +15,7 @@ export const GET_APPLICATION = gql`
 
 export const GET_APPLICATIONS = gql`
   {
-    application {
+    applications {
       id
       name
       version

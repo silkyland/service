@@ -14,6 +14,14 @@ import {
 } from "reactstrap";
 import swal from "sweetalert2";
 import { _ } from "lodash";
+import { Mutation, Query } from "react-apollo";
+import {
+  CREATE_APPLICATION,
+  UPDATE_APPLICATION,
+  GET_APPLICATIONS
+} from "../../../query/application";
+import Loading from "../../layout/share/Loading";
+import update from "immutability-helper";
 
 class Application extends Component {
   constructor(props) {
@@ -37,6 +45,7 @@ class Application extends Component {
     };
     this.toggleMainButton = this.toggleMainButton.bind(this);
     this.onInputChangeHandler = this.onInputChangeHandler.bind(this);
+    this.onErrorValidation = this.onErrorValidation.bind(this);
   }
 
   onErrorValidation(error) {
@@ -96,50 +105,156 @@ class Application extends Component {
             {this.state.mainButton.text}
           </Button>
         </CardHeader>
-        <CardBody>
-          <h4>โปรดกรอกรายละเอียดให้ครบถ้วน</h4>
-          <Form>
-            <FormGroup>
-              <Label>ชื่อ : </Label>
-              <Input
-                type="text"
-                autoFocus={true}
-                name="name"
-                placeholder="ชื่อโปรแกรม"
-                required
-                value={this.state.input.name}
-                onChange={this.onInputChangeHandler}
-                invalid={this.state.hasError.name}
-              />
-              {this.state.hasError.name ? (
-                <FormFeedback>{this.state.hasError.name}</FormFeedback>
-              ) : (
-                undefined
-              )}
-            </FormGroup>
-            <FormGroup>
-              <Label>เวอร์ชั่น : </Label>
-              <Input
-                type="text"
-                autoFocus={true}
-                name="name"
-                placeholder="เวอร์ชั่นของโปรแกรม"
-                required
-                value={this.state.input.name}
-                onChange={this.onInputChangeHandler}
-                invalid={this.state.hasError.name}
-              />
-              {this.state.hasError.name ? (
-                <FormFeedback>{this.state.hasError.name}</FormFeedback>
-              ) : (
-                undefined
-              )}
-            </FormGroup>
-            <Button type="submit" color="primary">
-              <i className="fa fa-save" /> บันทึก
-            </Button>
-          </Form>
-        </CardBody>
+        {this.state.isOpen ? (
+          <CardBody>
+            <h4>โปรดกรอกรายละเอียดให้ครบถ้วน</h4>
+            <Mutation
+              mutation={CREATE_APPLICATION}
+              onError={this.onErrorValidation}
+              update={(cache, { data: createApplication }) => {
+                let data = cache.readQuery({ GET_APPLICATIONS });
+                cache.writeQuery({
+                  query: GET_APPLICATIONS,
+                  data: update(data, {
+                    applications: { $push: [createApplication] }
+                  })
+                });
+              }}
+            >
+              {(createApplication, { error, loading }) => {
+                if (loading) return <Loading />;
+                if (error) swal("เกิดข้อผิดพลาด!", error.message, "error");
+                return (
+                  <Mutation
+                    mutation={UPDATE_APPLICATION}
+                    onError={this.onErrorValidation}
+                    update={(cache, { data: updateApplication }) => {
+                      let data = cache.readQuery({ query: GET_APPLICATIONS });
+                      let index = updateApplication.findIndex(
+                        application => application.id === updateApplication.id
+                      );
+                      cache.writeData({
+                        query: GET_APPLICATIONS,
+                        data: update(data, {
+                          applications: { [index]: { $set: updateApplication } }
+                        })
+                      });
+                    }}
+                  >
+                    {(updateApplication, { error, loading }) => {
+                      if (loading) return <Loading />;
+                      if (error)
+                        swal("เกิดข้อผิดพลาด!", error.message, "error");
+                      return (
+                        <Form
+                          onSubmit={e => {
+                            e.preventDefault();
+                            this.state.isEdit
+                              ? updateApplication
+                              : createApplication;
+                          }}
+                        >
+                          <FormGroup>
+                            <Label>
+                              ชื่อ: <span className="text-danger">*</span>
+                            </Label>
+                            <Input
+                              type="text"
+                              autoFocus={true}
+                              name="name"
+                              placeholder="ชื่อโปรแกรม"
+                              required
+                              value={this.state.input.name}
+                              onChange={this.onInputChangeHandler}
+                              invalid={this.state.hasError.name}
+                            />
+                            {this.state.hasError.name ? (
+                              <FormFeedback>
+                                {this.state.hasError.name}
+                              </FormFeedback>
+                            ) : (
+                              undefined
+                            )}
+                          </FormGroup>
+                          <FormGroup>
+                            <Label>เวอร์ชั่น : </Label>
+                            <Input
+                              type="text"
+                              name="version"
+                              placeholder="เวอร์ชั่นของโปรแกรม"
+                              value={this.state.input.version}
+                              onChange={this.onInputChangeHandler}
+                              invalid={this.state.hasError.version}
+                            />
+                            {this.state.hasError.version ? (
+                              <FormFeedback>
+                                {this.state.hasError.version}
+                              </FormFeedback>
+                            ) : (
+                              undefined
+                            )}
+                          </FormGroup>
+                          <FormGroup>
+                            <Label>หมายเหตุ : </Label>
+                            <Input
+                              type="text"
+                              name="comment"
+                              placeholder="กรอกหมายเหตุ"
+                              value={this.state.input.comment}
+                              onChange={this.onInputChangeHandler}
+                              invalid={this.state.hasError.comment}
+                            />
+                            {this.state.hasError.comment ? (
+                              <FormFeedback>
+                                {this.state.hasError.comment}
+                              </FormFeedback>
+                            ) : (
+                              undefined
+                            )}
+                          </FormGroup>
+                          <p>
+                            <span className="text-danger">*</span> หมายถึง
+                            จำเป็นต้องกรอกข้อมูล
+                          </p>
+                          <Button type="submit" color="primary">
+                            <i className="fa fa-save" /> บันทึก
+                          </Button>
+                        </Form>
+                      );
+                    }}
+                  </Mutation>
+                );
+              }}
+            </Mutation>
+          </CardBody>
+        ) : (
+          <Table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>ชื่อ</th>
+                <th>เวอร์ชั่น</th>
+                <th>หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <Query query={GET_APPLICATIONS}>
+                {({ error, loading, data }) => {
+                  if (loading) return <Loading />;
+                  if (error) swal("ผิดพลาด!", error.message, "error");
+                  return data.applications.map((application, index) => (
+                    <tr key={application.id}>
+                      <td>{index + 1}</td>
+                      <td>{application.name}</td>
+                      <td>{application.version}</td>
+                      <td>{application.comment}</td>
+                    </tr>
+                  ));
+                }}
+              </Query>
+            </tbody>
+          </Table>
+        )}
       </Card>
     );
   }
