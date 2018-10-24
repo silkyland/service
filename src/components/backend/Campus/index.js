@@ -245,7 +245,7 @@ class Campus extends Component {
                                 });
                               }}
                             >
-                              <i className="fa fa-edit" /> แก้ไข
+                              <i className="fa fa-edit" />
                             </Button>{" "}
                             <Mutation
                               mutation={DELETE_CAMPUS}
@@ -301,7 +301,7 @@ class Campus extends Component {
                                       });
                                     }}
                                   >
-                                    <i className="fa fa-times" /> ลบ
+                                    <i className="fa fa-times" />
                                   </Button>
                                 );
                               }}

@@ -1,29 +1,27 @@
-import React, { Component } from "react";
-import {
-  Card,
-  CardHeader,
-  Button,
-  CardBody,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Table,
-  Alert,
-  FormFeedback
-} from "reactstrap";
-import { Dots } from "react-activity";
-import swal from "sweetalert2";
-import { Query, Mutation, ApolloConsumer } from "react-apollo";
-import {
-  GET_OPERATING_SYSTEMS,
-  UPDATE_OPERATING_SYSTEM,
-  CREATE_OPERATING_SYSTEM,
-  DELETE_OPERATING_SYSTEM,
-  GET_OPERATING_SYSTEM
-} from "../../../query/operatingSystem";
 import update from "immutability-helper";
 import _ from "lodash";
+import React, { Component } from "react";
+import { Mutation, Query } from "react-apollo";
+import {
+  Alert,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
+  Table
+} from "reactstrap";
+import swal from "sweetalert2";
+import {
+  CREATE_OPERATING_SYSTEM,
+  DELETE_OPERATING_SYSTEM,
+  GET_OPERATING_SYSTEMS,
+  UPDATE_OPERATING_SYSTEM
+} from "../../../query/operatingSystem";
 import Loading from "../../layout/share/Loading";
 
 class OperatingSystem extends Component {
@@ -364,7 +362,7 @@ class OperatingSystem extends Component {
                               });
                             }}
                           >
-                            <i className="fa fa-edit" /> แก้ไข
+                            <i className="fa fa-edit" />
                           </Button>{" "}
                           <Mutation
                             mutation={DELETE_OPERATING_SYSTEM}
@@ -419,7 +417,7 @@ class OperatingSystem extends Component {
                                     });
                                   }}
                                 >
-                                  <i className="fa fa-times" /> ลบ
+                                  <i className="fa fa-times" />
                                 </Button>
                               );
                             }}

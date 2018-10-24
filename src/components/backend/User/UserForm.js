@@ -1,25 +1,18 @@
-import React from "react";
-import {
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  CardBody,
-  Button,
-  Alert,
-  FormFeedback
-} from "reactstrap";
-import { Mutation, Query, ApolloConsumer } from "react-apollo";
-import { Dots } from "react-activity";
-import {
-  CREATE_USER,
-  GET_USERS,
-  UPDATE_USER,
-  GET_USER
-} from "../../../query/user";
 import update from "immutability-helper";
-import Validator from "validatorjs";
+import React from "react";
+import { Mutation } from "react-apollo";
+import {
+  Alert,
+  Button,
+  CardBody,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label
+} from "reactstrap";
 import swal from "sweetalert2";
+import { CREATE_USER, GET_USERS, UPDATE_USER } from "../../../query/user";
 import Loading from "../../layout/share/Loading";
 
 const updateCache = (cache, { data: { createUser } }) => {

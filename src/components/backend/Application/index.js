@@ -1,27 +1,34 @@
+import update from "immutability-helper";
+import _ from "lodash";
 import React, { Component } from "react";
+import { Mutation, Query } from "react-apollo";
 import {
+  Button,
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   Form,
+  FormFeedback,
   FormGroup,
   Input,
   Label,
-  Table,
-  Button,
-  Alert,
-  FormFeedback
+  Table
 } from "reactstrap";
 import swal from "sweetalert2";
-import { _ } from "lodash";
-import { Mutation, Query } from "react-apollo";
 import {
   CREATE_APPLICATION,
-  UPDATE_APPLICATION,
-  GET_APPLICATIONS
+  GET_APPLICATIONS,
+  UPDATE_APPLICATION
 } from "../../../query/application";
 import Loading from "../../layout/share/Loading";
-import update from "immutability-helper";
+import {
+  SUCCESS,
+  DATA_WAS_SAVED,
+  COLOR_ERROR,
+  COLOR_SUCCESS,
+  SUCCESS_TITLE_MESSAGE,
+  ERROR_TITLE_MESSAGE
+} from "../../layout/share/constantName";
 
 class Application extends Component {
   constructor(props) {
@@ -110,9 +117,15 @@ class Application extends Component {
             <h4>โปรดกรอกรายละเอียดให้ครบถ้วน</h4>
             <Mutation
               mutation={CREATE_APPLICATION}
+              onCompleted={() => {
+                swal(SUCCESS_TITLE_MESSAGE, DATA_WAS_SAVED, COLOR_SUCCESS);
+                this.toggleMainButton();
+              }}
               onError={this.onErrorValidation}
               update={(cache, { data: createApplication }) => {
-                let data = cache.readQuery({ GET_APPLICATIONS });
+                let data = cache.readQuery({ query: GET_APPLICATIONS });
+                console.log(data);
+                console.log(createApplication);
                 cache.writeQuery({
                   query: GET_APPLICATIONS,
                   data: update(data, {
@@ -123,20 +136,33 @@ class Application extends Component {
             >
               {(createApplication, { error, loading }) => {
                 if (loading) return <Loading />;
-                if (error) swal("เกิดข้อผิดพลาด!", error.message, "error");
+                if (error)
+                  swal(ERROR_TITLE_MESSAGE, error.message, COLOR_ERROR);
                 return (
                   <Mutation
                     mutation={UPDATE_APPLICATION}
                     onError={this.onErrorValidation}
+                    onCompleted={() => {
+                      swal(
+                        SUCCESS_TITLE_MESSAGE,
+                        DATA_WAS_SAVED,
+                        COLOR_SUCCESS
+                      );
+                      this.toggleMainButton;
+                    }}
                     update={(cache, { data: updateApplication }) => {
-                      let data = cache.readQuery({ query: GET_APPLICATIONS });
+                      let data = cache.readQuery({
+                        query: GET_APPLICATIONS
+                      });
                       let index = updateApplication.findIndex(
                         application => application.id === updateApplication.id
                       );
                       cache.writeData({
                         query: GET_APPLICATIONS,
                         data: update(data, {
-                          applications: { [index]: { $set: updateApplication } }
+                          applications: {
+                            [index]: { $set: updateApplication }
+                          }
                         })
                       });
                     }}
@@ -150,8 +176,12 @@ class Application extends Component {
                           onSubmit={e => {
                             e.preventDefault();
                             this.state.isEdit
-                              ? updateApplication
-                              : createApplication;
+                              ? updateApplication({
+                                  variables: this.state.input
+                                })
+                              : createApplication({
+                                  variables: this.state.input
+                                });
                           }}
                         >
                           <FormGroup>
@@ -228,32 +258,55 @@ class Application extends Component {
             </Mutation>
           </CardBody>
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>ชื่อ</th>
-                <th>เวอร์ชั่น</th>
-                <th>หมายเหตุ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <Query query={GET_APPLICATIONS}>
-                {({ error, loading, data }) => {
-                  if (loading) return <Loading />;
-                  if (error) swal("ผิดพลาด!", error.message, "error");
-                  return data.applications.map((application, index) => (
-                    <tr key={application.id}>
-                      <td>{index + 1}</td>
-                      <td>{application.name}</td>
-                      <td>{application.version}</td>
-                      <td>{application.comment}</td>
-                    </tr>
-                  ));
-                }}
-              </Query>
-            </tbody>
-          </Table>
+          <Query query={GET_APPLICATIONS}>
+            {({ error, loading, data }) => {
+              if (loading) return <Loading />;
+              if (error) swal("ผิดพลาด!", error.message, "error");
+              return (
+                <React.Fragment>
+                  <CardBody>
+                    <p>กำลังแสดงผล</p>
+                  </CardBody>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>ชื่อ</th>
+                        <th>เวอร์ชั่น</th>
+                        <th>หมายเหตุ</th>
+                        <th>จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.applications.length < 1 ? (
+                        <tr>
+                          <td className="text-center" colSpan="5">
+                            === ไม่พบข้อมูล ===
+                          </td>
+                        </tr>
+                      ) : (
+                        undefined
+                      )}
+                      {data.applications.map((application, index) => (
+                        <tr key={application.id}>
+                          <td>{index + 1}</td>
+                          <td>{application.name}</td>
+                          <td>{application.version}</td>
+                          <td>{application.comment}</td>
+                          <td>
+                            <Button color="warning" size="sm">
+                              {" "}
+                              <i className="fa fa-edit" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </React.Fragment>
+              );
+            }}
+          </Query>
         )}
       </Card>
     );

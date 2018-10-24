@@ -51,7 +51,7 @@ const UserList = props => (
                       });
                     }}
                   >
-                    <i className="fa fa-edit" /> แก้ไข
+                    <i className="fa fa-edit" />
                   </Button>{" "}
                   <Mutation
                     mutation={DELETE_USER}
@@ -100,7 +100,7 @@ const UserList = props => (
                             });
                           }}
                         >
-                          <i className="fa fa-times" /> ลบ
+                          <i className="fa fa-times" />
                         </Button>
                       );
                     }}
