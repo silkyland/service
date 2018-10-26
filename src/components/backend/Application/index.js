@@ -124,8 +124,6 @@ class Application extends Component {
               onError={this.onErrorValidation}
               update={(cache, { data: createApplication }) => {
                 let data = cache.readQuery({ query: GET_APPLICATIONS });
-                console.log(data);
-                console.log(createApplication);
                 cache.writeQuery({
                   query: GET_APPLICATIONS,
                   data: update(data, {
@@ -278,7 +276,7 @@ class Application extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.applications.length < 1 ? (
+                      {data.applications.data.length < 1 ? (
                         <tr>
                           <td className="text-center" colSpan="5">
                             === ไม่พบข้อมูล ===
@@ -287,7 +285,7 @@ class Application extends Component {
                       ) : (
                         undefined
                       )}
-                      {data.applications.map((application, index) => (
+                      {data.applications.data.map((application, index) => (
                         <tr key={application.id}>
                           <td>{index + 1}</td>
                           <td>{application.name}</td>

@@ -16,12 +16,22 @@ export const GET_APPLICATION = gql`
 export const GET_APPLICATIONS = gql`
   {
     applications {
-      id
-      name
-      version
-      comment
-      createdAt
-      updatedAt
+      data {
+        id
+        name
+        version
+        comment
+        createdAt
+        updatedAt
+      }
+      pagination {
+        total
+        perPage
+        currentPage
+        lastPage
+        from
+        to
+      }
     }
   }
 `;
