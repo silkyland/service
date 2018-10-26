@@ -31,6 +31,8 @@ export const GET_APPLICATIONS = gql`
         lastPage
         from
         to
+        nextPage
+        prevPage
       }
     }
   }

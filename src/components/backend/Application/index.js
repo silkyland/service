@@ -29,6 +29,7 @@ import {
   SUCCESS_TITLE_MESSAGE,
   ERROR_TITLE_MESSAGE
 } from "../../layout/share/constantName";
+import Paginate from "../../helpers/Paginate";
 
 class Application extends Component {
   constructor(props) {
@@ -301,6 +302,14 @@ class Application extends Component {
                       ))}
                     </tbody>
                   </Table>
+                  <CardBody>
+                    <Paginate
+                      data={data.applications.pagination}
+                      onPageNumberClick={page => {
+                        console.log(page);
+                      }}
+                    />
+                  </CardBody>
                 </React.Fragment>
               );
             }}
