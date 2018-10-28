@@ -14,8 +14,8 @@ export const GET_APPLICATION = gql`
 `;
 
 export const GET_APPLICATIONS = gql`
-  {
-    applications {
+  query applications {
+    applications(params: Filter) {
       data {
         id
         name

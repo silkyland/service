@@ -77,7 +77,7 @@ class OperatingSystem extends Component {
 
   onValidationError(error) {
     if (
-      _.get(error, "graphQLErrors.0.extensions.code", "") == "VALIDATION_ERROR"
+      _.get(error, "graphQLErrors.0.extensions.code", "") === "VALIDATION_ERROR"
     ) {
       this.setState({
         hasError: error.graphQLErrors[0].extensions.exception
@@ -150,7 +150,7 @@ class OperatingSystem extends Component {
                             query: GET_OPERATING_SYSTEMS
                           });
                           let index = data.operatingSystems.findIndex(
-                            os => os.id == updateOperatingSystem.id
+                            os => os.id === updateOperatingSystem.id
                           );
                           cache.writeQuery({
                             query: GET_OPERATING_SYSTEMS,

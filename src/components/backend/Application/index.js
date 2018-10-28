@@ -257,7 +257,14 @@ class Application extends Component {
             </Mutation>
           </CardBody>
         ) : (
-          <Query query={GET_APPLICATIONS}>
+          <Query
+            query={GET_APPLICATIONS}
+            variables={{
+              filter: {
+                first: 5
+              }
+            }}
+          >
             {({ error, loading, data }) => {
               if (loading) return <Loading />;
               if (error) swal("ผิดพลาด!", error.message, "error");
