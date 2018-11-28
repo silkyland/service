@@ -14,27 +14,26 @@ export const GET_APPLICATION = gql`
 `;
 
 export const GET_APPLICATIONS = gql`
-  query applications {
-    applications(params: Filter) {
-      data {
-        id
-        name
-        version
-        comment
-        createdAt
-        updatedAt
-      }
-      pagination {
-        total
-        perPage
-        currentPage
-        lastPage
-        from
-        to
-        nextPage
-        prevPage
-      }
+  query application($filter: Filter) {
+    applications(filter: $filter) {
+      id
+      name
+      version
+      comment
+      createdAt
+      updatedAt
     }
+  }
+
+  query pagination {
+    total
+    perPage
+    currentPage
+    lastPage
+    from
+    to
+    nextPage
+    prevPage
   }
 `;
 

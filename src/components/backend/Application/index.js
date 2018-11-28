@@ -261,7 +261,7 @@ class Application extends Component {
             query={GET_APPLICATIONS}
             variables={{
               filter: {
-                first: 5
+                skip: 3
               }
             }}
           >
@@ -284,7 +284,7 @@ class Application extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.applications.data.length < 1 ? (
+                      {data.applications.length < 1 ? (
                         <tr>
                           <td className="text-center" colSpan="5">
                             === ไม่พบข้อมูล ===
@@ -293,7 +293,7 @@ class Application extends Component {
                       ) : (
                         undefined
                       )}
-                      {data.applications.data.map((application, index) => (
+                      {data.applications.map((application, index) => (
                         <tr key={application.id}>
                           <td>{index + 1}</td>
                           <td>{application.name}</td>

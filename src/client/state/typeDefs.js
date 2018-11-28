@@ -6,7 +6,11 @@ const typeDefs = [
   }
 
   input Filter {
-    skip: Int, after: String, before: String, first: Int, last: Int
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
   }
 
   type Query {
