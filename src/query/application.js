@@ -14,8 +14,8 @@ export const GET_APPLICATION = gql`
 `;
 
 export const GET_APPLICATIONS = gql`
-  query applications {
-    applications(params: Filter) {
+  query applications($filter: Filter) {
+    applications(filter: $filter) {
       data {
         id
         name
